@@ -12,15 +12,15 @@ body {
 }
 
 .logo-main-img {
-  height: 80px;
+  height: 60px;
   position: absolute;
-  top: 50px;
-  left: 150px;
+  top: 20px;
+  left: 40px;
 }
 .text-logo {
   position: relative;
-  left: 240px;
-  top: 80px;
+  left: 110px;
+  top: 40px;
   color: white;
 }
 @media (max-width: 605px) {
@@ -28,29 +28,29 @@ body {
     height: 20vh;
   }
   .logo-main-img {
-    height: 80px;
+    height: 60px;
     position: absolute;
-    top: 40px;
-    left: 60px;
+    top: 20px;
+    left: 40px;
   }
   .text-logo {
     position: relative;
-    left: 150px;
-    top: 70px;
+    left: 110px;
+    top: 40px;
     color: white;
   }
 }
 @media (min-width: 1070px) {
   .logo-main-img {
-    height: 80px;
+    height: 60px;
     position: absolute;
-    top: 80px;
+    top: 20px;
     left: 280px;
   }
   .text-logo {
     position: relative;
-    left: 360px;
-    top: 110px;
+    left: 350px;
+    top: 40px;
     color: white;
   }
 }
