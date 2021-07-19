@@ -1,0 +1,25 @@
+.mainDiv {
+  background-color: #fff;
+  border-radius: 3px;
+  box-shadow: 0 17px 50px 0 rgb(0 0 0 / 19%), 0 12px 15px 0 rgb(0 0 0 / 24%);
+  height: 500px;
+  width: 500px;
+  z-index: 1;
+  position: absolute;
+  top: 138px;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+.LoginTitle {
+  font-size: 2rem;
+  font-weight: 300;
+  line-height: normal;
+  color: #525252;
+}
+
+@media (max-width: 780px) {
+  .mainDiv {
+    top: 93px;
+  }
+}
