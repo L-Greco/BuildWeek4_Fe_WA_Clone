@@ -1,6 +1,7 @@
 import { Col } from 'react-bootstrap';
 import './styles/MainChat.css';
 import { AiOutlineSearch } from 'react-icons/ai';
+import { BsFillMicFill } from 'react-icons/bs';
 import { FormControl } from 'react-bootstrap';
 
 const MainChat = () => {
@@ -19,14 +20,17 @@ const MainChat = () => {
           <div>
             <Col md={12}>
               <div className="searching-div-main-chat">
-                <span className="magnify-wrapper">
-                  <AiOutlineSearch className="magnify-glass-navbar" />
+                <span>
+                  <AiOutlineSearch className="magnify-glass-main-chat" />
                 </span>{' '}
                 <FormControl
                   type="text"
-                  placeholder="Search"
-                  className="navbar-searching-style"
+                  placeholder="Type your message..."
+                  className="message-input-main-chat"
                 />
+                <span>
+                  <BsFillMicFill className="voice-message-icon" />
+                </span>
               </div>
             </Col>
           </div>

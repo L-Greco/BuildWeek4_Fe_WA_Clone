@@ -34,7 +34,7 @@ const LeftNav = () => {
             </span>{' '}
             <FormControl
               type="text"
-              placeholder="Search"
+              placeholder="Search contacts"
               className="navbar-searching-style"
             />
           </div>
