@@ -1,0 +1,20 @@
+.main-chat-view {
+  height: 95vh;
+  position: relative;
+  background-image: url(https://theabbie.github.io/blog/assets/official-whatsapp-background-image.jpg);
+}
+.chat-header {
+  background-color: #dddbd1;
+  padding-bottom: 21px;
+}
+.searching-div-main-chat {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  left: 0px;
+  padding-left: 25px;
+  padding-bottom: 10px;
+  background-color: #e5e5e2;
+  padding-right: 0px;
+  --bs-gutter-x: 0 !important;
+}
