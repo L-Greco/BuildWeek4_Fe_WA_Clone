@@ -1,0 +1,85 @@
+.mainDiv {
+  background-color: #fff;
+  border-radius: 3px;
+  box-shadow: 0 17px 50px 0 rgb(0 0 0 / 19%), 0 12px 15px 0 rgb(0 0 0 / 24%);
+  z-index: 1;
+  position: absolute;
+  top: 138px;
+  left: 50%;
+  transform: translate(-50%);
+  min-width: fit-content;
+}
+
+.LoginTitle {
+  font-weight: 300;
+  line-height: normal;
+  color: #525252 !important;
+  font-size: 28px;
+}
+.LoginLi {
+  font-size: 16px;
+  font-weight: 400;
+  color: #4a4a4a;
+}
+
+.LiBold {
+  font-weight: 500;
+  color: #4a4a4a;
+}
+
+.GreenLink {
+  font-size: 14px;
+  color: #009688 !important;
+  line-height: 14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+@media (min-width: 900px) {
+  .LoginTitle {
+    margin-bottom: 36px;
+    font-size: 28px;
+  }
+  .LoginLi {
+    line-height: 28px;
+    font-size: 18px;
+  }
+  .LiBold {
+    line-height: 24px;
+    font-size: 18px;
+  }
+  .mainDiv {
+    min-width: 908px;
+  }
+}
+@media only screen and (min-width: 661px) and (max-width: 899px) {
+  .mainDiv {
+    top: 93px;
+  }
+  .LoginTitle {
+    margin-bottom: 28px;
+    font-size: 26px;
+  }
+  .LoginLi {
+    line-height: 25px;
+    font-size: 16px;
+  }
+  .LiBold {
+    line-height: 25px;
+    font-size: 16px;
+  }
+}
+@media (max-width: 660px) {
+  .LoginTitle {
+    margin-bottom: 24px;
+    font-size: 24px;
+  }
+  .LoginLi {
+    line-height: 24px;
+    font-size: 16px;
+  }
+  .LiBold {
+    line-height: 24px;
+    font-size: 16px;
+  }
+}
