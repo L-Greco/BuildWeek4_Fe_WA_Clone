@@ -10,6 +10,7 @@ class LoginPage extends Component {
   state = {
     signUp: false,
   };
+
   hideModal = () => {
     this.setState({ signUp: false });
   };
