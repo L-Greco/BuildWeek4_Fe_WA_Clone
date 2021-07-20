@@ -44,6 +44,13 @@
 
   margin-top: 10px !important;
 }
+.navbar-searching-style:focus {
+  color: black;
+  border: 1px solid #ced4da;
+  border-left-style: none;
+  box-shadow: none !important;
+  outline: none !important;
+}
 
 .magnify-glass-navbar {
   position: relative;
