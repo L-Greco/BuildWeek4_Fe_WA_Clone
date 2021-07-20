@@ -9,6 +9,16 @@ body {
   right: 0px;
   background-color: #1ebea5;
   height: 30vh;
+  z-index: -1;
+}
+.main-div-home {
+  position: absolute;
+  top: 15px;
+  bottom: 15px;
+  left: 15px;
+  right: 15px;
+  background-color: rgb(202, 202, 223);
+  --bs-gutter-x: 0 !important;
 }
 
 .logo-main-img {
@@ -22,6 +32,10 @@ body {
   left: 240px;
   top: 80px;
   color: white;
+}
+.no-border {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
 }
 @media (max-width: 605px) {
   .green-part {
