@@ -1,14 +1,11 @@
-:root {
-  --width: 80%;
-}
 .contacts-left-nav {
   background-color: #dddbd1;
   height: 98vh;
-  width: 428px;
+  width: 0%;
   position: absolute;
   top: 0px;
   z-index: 1;
-  bottom: -15px;
+  /* bottom: -15px; */
   overflow: hidden;
 
   transition: 0.2s linear;
@@ -32,6 +29,7 @@
   font-size: 20px;
   font-weight: 1200;
   stroke: black;
+  cursor: pointer;
 }
 .group-icon {
   padding-top: 10px;

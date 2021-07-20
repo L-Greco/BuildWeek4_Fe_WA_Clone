@@ -4,6 +4,7 @@ import MainChat from './MainChat';
 
 import '../index.css';
 import data from './json/profile.json'; ////this will be data coming from fetch!!!!!!!!!!!!!!!/////
+import Contacts from './Contacts';
 
 const Home = () => {
   return (

@@ -1,6 +1,7 @@
 .profile-part-main {
   background-color: #dddbd1;
   padding-bottom: 20px;
+  display: block;
 }
 .profile-user-header {
   padding-left: 10px;
@@ -23,6 +24,7 @@
 }
 .icons-profile-style {
   font-size: 25px;
+  cursor: pointer;
 }
 .searching-div {
   padding-left: 25px;

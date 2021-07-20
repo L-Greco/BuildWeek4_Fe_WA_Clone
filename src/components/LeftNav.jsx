@@ -16,10 +16,10 @@ const LeftNav = ({ profile, chats, friends }) => {
     setSelected(true);
   };
   const toggleContacts = () => {
-    console.log('Magda');
     const mainComp = document.getElementById('mainComp');
-    mainComp.style.width = 'auto';
+    mainComp.style.width = '432px';
   };
+
   return (
     <>
       <>

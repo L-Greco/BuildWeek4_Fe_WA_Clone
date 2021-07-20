@@ -4,12 +4,19 @@ import { AiOutlineSearch, AiOutlineUsergroupAdd } from 'react-icons/ai';
 import { FormControl, Row, Col } from 'react-bootstrap';
 
 const Contacts = ({ friends }) => {
+  const untoggleContacts = () => {
+    const mainComp = document.getElementById('mainComp');
+    mainComp.style.width = '0px';
+  };
   return (
     <>
       <div id="mainComp" className="contacts-left-nav">
         <div className="navigation-new-chat">
           <span>
-            <HiArrowNarrowLeft className="narrow-header" />
+            <HiArrowNarrowLeft
+              onClick={() => untoggleContacts()}
+              className="narrow-header"
+            />
           </span>
           <span className="navigation-header"> New Chat</span>
         </div>
