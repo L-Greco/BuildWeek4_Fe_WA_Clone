@@ -75,11 +75,16 @@ function LoginForm({ showModal, hideModal }) {
                         }
                         required
                       />
-                      {}
+                      {firstNameValidation && (
+                        <p className="wrongValidation my-2">
+                          Please provide a real name
+                        </p>
+                      )}
                     </Col>
                     <Col>
                       <Form.Control
                         id="lastName"
+                        className="mt-1"
                         isInvalid={lastNameValidation}
                         placeholder="Last name"
                         pattern="[A-Za-z]{3,}"
@@ -91,6 +96,11 @@ function LoginForm({ showModal, hideModal }) {
                         }
                         required
                       />
+                      {lastNameValidation && (
+                        <p className="wrongValidation my-2">
+                          Please provide a Last Name
+                        </p>
+                      )}
                     </Col>
                   </Form.Row>
                   <Form.Row>
@@ -107,6 +117,11 @@ function LoginForm({ showModal, hideModal }) {
                         placeholder="email"
                         required
                       />
+                      {emailValidation && (
+                        <p className="wrongValidation my-2">
+                          Please provide an email
+                        </p>
+                      )}
                     </Form.Group>
 
                     <Form.Group className="mt-1" as={Col}>
@@ -127,6 +142,12 @@ function LoginForm({ showModal, hideModal }) {
                     </Form.Group>
                   </Form.Row>
                 </Form>
+                {passwordValidation && (
+                  <p className="wrongValidation my-2">
+                    Password must contain at least one number and one uppercase
+                    and lowercase letter, and at least 8 or more characters
+                  </p>
+                )}
               </Col>
             </Row>
           </Container>
