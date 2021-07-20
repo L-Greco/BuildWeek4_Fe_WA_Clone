@@ -1,11 +1,25 @@
 import './styles/LeftNav.css';
-import { Col, FormControl, Form } from 'react-bootstrap';
+import { Col, FormControl } from 'react-bootstrap';
 import { AiOutlineSearch } from 'react-icons/ai';
 
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { BiMessageDetail, BiLoaderCircle } from 'react-icons/bi';
 
-const LeftNav = () => {
+import Contacts from './Contacts.jsx';
+import ChatItem from './ChatItem';
+import { useState } from 'react';
+
+const LeftNav = ({ profile, chats, friends }) => {
+  const [selected, setSelected] = useState(false);
+
+  const handleClick = (e) => {
+    setSelected(true);
+  };
+  const toggleContacts = () => {
+    console.log('Magda');
+    const mainComp = document.getElementById('mainComp');
+    mainComp.style.width = 'auto';
+  };
   return (
     <>
       <>
@@ -14,7 +28,8 @@ const LeftNav = () => {
             src="https://www.svgrepo.com/show/170303/avatar.svg"
             alt="avatar"
             className="avatar-img-style"
-          />{' '}
+          />
+          <span className="profile-user-header">{profile.lastName}</span>
           <div className="icons-span">
             <span className="icons-wrapper">
               <BiLoaderCircle className="icons-profile-style" />
@@ -23,7 +38,10 @@ const LeftNav = () => {
               <BsThreeDotsVertical className="icons-profile-style" />
             </span>
             <span className="icons-wrapper">
-              <BiMessageDetail className="icons-profile-style" />
+              <BiMessageDetail
+                onClick={() => toggleContacts()}
+                className="icons-profile-style"
+              />
             </span>
           </div>
         </div>
@@ -39,8 +57,10 @@ const LeftNav = () => {
             />
           </div>
         </Col>
+        <Contacts friends={friends} />
 
-        <div className="chats-list">chats</div>
+        {chats &&
+          chats.map((chat) => <ChatItem key={chat.chat} id={chat.chat} />)}
       </>
     </>
   );

@@ -2,6 +2,10 @@
   background-color: #dddbd1;
   padding-bottom: 20px;
 }
+.profile-user-header {
+  padding-left: 10px;
+  font-weight: 600;
+}
 .avatar-img-style {
   border-radius: 50%;
   height: 40px;
@@ -80,4 +84,34 @@
 .chat-header {
   background-color: #dddbd1;
   padding-bottom: 21px;
+}
+.chat-list-item {
+  border-bottom: 1px solid rgb(189, 186, 186);
+  border-right: 1px solid rgb(189, 186, 186);
+
+  background-color: whitesmoke;
+  padding-right: 10px;
+}
+.chat-list-selected {
+  background-color: rgb(175, 182, 182);
+}
+.avatar-chat {
+  height: 50px;
+  border-radius: 30px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+.chat-item-contact {
+  margin-top: 10px;
+  padding-left: 15px;
+  font-weight: 600;
+}
+.chat-item-messaage {
+  padding-left: 15px;
+  font-weight: 300;
+}
+.chat-item-time {
+  padding-top: 10px;
+  font-size: 12px;
 }

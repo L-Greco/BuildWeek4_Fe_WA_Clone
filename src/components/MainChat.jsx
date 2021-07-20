@@ -3,6 +3,8 @@ import './styles/MainChat.css';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { BsFillMicFill } from 'react-icons/bs';
 import { FormControl } from 'react-bootstrap';
+import 'react-chat-elements/dist/main.css';
+import { MessageList, ChatItem, MessageBox } from 'react-chat-elements';
 
 const MainChat = () => {
   return (
@@ -17,6 +19,31 @@ const MainChat = () => {
               className="avatar-img-style"
             />
           </div>
+          <MessageList
+            lockable={true}
+            toBottomHeight={'100%'}
+            dataSource={[
+              {
+                position: 'right',
+                type: 'text',
+                text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit',
+                date: new Date(),
+              },
+              {
+                position: 'right',
+                type: 'text',
+                text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit',
+                date: new Date(),
+              },
+              {
+                position: 'right',
+                type: 'text',
+                text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit',
+                date: new Date(),
+              },
+            ]}
+          />
+
           <div>
             <Col md={12}>
               <div className="searching-div-main-chat">
