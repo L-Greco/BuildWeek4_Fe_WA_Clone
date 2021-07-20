@@ -2,6 +2,7 @@ import { Button, Modal, Col, Container, Row, Form } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { BiExit } from "react-icons/bi";
 import "../styles/LoginForm.css";
+import { postRequest } from "../lib/axios.js";
 
 function LoginForm({ showModal, hideModal }) {
   const [show, setShow] = useState(false);
@@ -35,14 +36,35 @@ function LoginForm({ showModal, hideModal }) {
     setUser({ ...user, [`${id}`]: e.target.value });
   };
 
-  useEffect(() => {
-    setShow(showModal);
-  }, [showModal]);
-
   const handleClose = () => {
     setShow(false);
     hideModal();
   };
+
+  const submitHandler = async () => {
+    try {
+      const userObject = {
+        profile: {
+          firstName: user.name,
+          lastName: user.lastName,
+          email: user.email,
+        },
+        password: user.password,
+      };
+      const res = await postRequest("users/register", userObject);
+
+      if (res.status === 201) {
+        console.log(res.data);
+        handleClose();
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  useEffect(() => {
+    setShow(showModal);
+  }, [showModal]);
 
   const handleShow = () => setShow(true);
 
@@ -155,8 +177,7 @@ function LoginForm({ showModal, hideModal }) {
         <Modal.Footer>
           <button
             className="my-auto mx-auto loginFormSubmitButton"
-            type="submit"
-            onClick={() => console.log(user)}
+            onClick={() => submitHandler()}
           >
             Submit
           </button>
