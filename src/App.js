@@ -9,8 +9,9 @@ function App() {
   return (
     <Router>
       <BackGround />
-      <Home />
-      <LoginPage />
+      <Route component={LoginPage} path="/" exact />
+      <Route component={Home} path="/Home" exact />
+
     </Router>
   );
 }
