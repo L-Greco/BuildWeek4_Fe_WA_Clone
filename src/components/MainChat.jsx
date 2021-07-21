@@ -6,26 +6,34 @@ import { FormControl } from 'react-bootstrap';
 import 'react-chat-elements/dist/main.css';
 import { MessageList } from 'react-chat-elements';
 import { LoginContext } from './GlobalState';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { getRequest } from '../lib/axios';
 import { useState } from 'react';
+import parseISO from 'date-fns/parseISO';
+import format from 'date-fns/format';
 
 const MainChat = () => {
   const [messages, setMessages] = useState();
-  const { selectedChat } = useContext(LoginContext);
+  const { selectedChat, user } = useContext(LoginContext);
 
   const getChatDetails = async () => {
-    try {
-      const res = await getRequest(`chat/${selectedChat}`);
-      if (res.status === 200) {
-        console.log(res);
-        setMessages(res.data);
+    if (selectedChat) {
+      try {
+        const res = await getRequest(`chat/${selectedChat}`);
+        if ((res.status = 200)) {
+          console.log(res.data.history);
+          setMessages(res.data.history);
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
     }
   };
+  // getChatDetails();
 
+  useEffect(() => {
+    getChatDetails();
+  }, [selectedChat]);
   return (
     <>
       <Col md={12}>
@@ -38,30 +46,20 @@ const MainChat = () => {
               className="avatar-img-style"
             />
           </div>
+
           <MessageList
             lockable={true}
             toBottomHeight={'100%'}
-            dataSource={[
-              {
-                position: 'left',
-                type: 'text',
-                text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit',
-                date: new Date(),
-                user: 'me',
-              },
-              {
-                position: 'right',
-                type: 'text',
-                text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit',
-                date: new Date(),
-              },
-              {
-                position: 'right',
-                type: 'text',
-                text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit',
-                date: new Date(),
-              },
-            ]}
+            dataSource={
+              messages &&
+              messages.map((message) => {
+                return {
+                  ...message,
+                  position: user._id === message.userId ? 'right' : 'left',
+                  date: message.date ? parseISO(message.date) : 'nothing',
+                };
+              })
+            }
           />
 
           <div>

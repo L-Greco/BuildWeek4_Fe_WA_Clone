@@ -1,4 +1,4 @@
-import { Container, Row, Col, Form, Button, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Form, Spinner } from 'react-bootstrap';
 import '../styles/LoginPage.css';
 import { BiDotsVerticalRounded } from 'react-icons/bi';
 import { BsGearWideConnected } from 'react-icons/bs';

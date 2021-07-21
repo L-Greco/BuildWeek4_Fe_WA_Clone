@@ -8,12 +8,8 @@ import { BiMessageDetail, BiLoaderCircle } from 'react-icons/bi';
 import Contacts from './Contacts.jsx';
 import Profile from './Profile';
 import ChatItem from './ChatItem';
-import { useContext } from 'react';
-import { LoginContext } from './GlobalState';
 
 const LeftNav = ({ profile, chats, friends }) => {
-  const { setSelectedChat } = useContext(LoginContext);
-
   const toggleContacts = () => {
     const mainComp = document.getElementById('mainComp');
     mainComp.style.width = '432px';
@@ -74,7 +70,6 @@ const LeftNav = ({ profile, chats, friends }) => {
               id={item.chat._id}
               message={item.chat.latestMessage.text}
               time={item.chat.latestMessage.updatedAt}
-              onClick={setSelectedChat(item.chat._id)}
             />
           ))}
       </>

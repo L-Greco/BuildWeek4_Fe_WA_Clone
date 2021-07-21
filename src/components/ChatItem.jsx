@@ -2,11 +2,16 @@ import './styles/LeftNav.css';
 import { Row, Col } from 'react-bootstrap';
 import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
+import { useContext, useEffect } from 'react';
+import { LoginContext } from './GlobalState';
+import { getRequest } from '../lib/axios';
 
 const ChatItem = ({ id, participants, message, time, owner }) => {
+  const { setSelectedChat, selectedChat } = useContext(LoginContext);
+
   return (
     <>
-      <div className="chat-list-item">
+      <div className="chat-list-item" onClick={() => setSelectedChat(id)}>
         <Row>
           <Col sm={2}>
             <img
@@ -28,7 +33,7 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
           </Col>
           <Col sm={2}>
             <div className="chat-item-time">
-              {time ? format(parseISO(time), 'HH:mm') : 'nothing'}
+              {time ? parseISO(time) : 'nothing'}
             </div>
           </Col>
         </Row>
