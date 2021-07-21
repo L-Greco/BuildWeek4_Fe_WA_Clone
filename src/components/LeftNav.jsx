@@ -1,11 +1,24 @@
 import './styles/LeftNav.css';
-import { Col, FormControl, Form } from 'react-bootstrap';
+import { Col, FormControl } from 'react-bootstrap';
 import { AiOutlineSearch } from 'react-icons/ai';
 
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { BiMessageDetail, BiLoaderCircle } from 'react-icons/bi';
 
-const LeftNav = () => {
+import Contacts from './Contacts.jsx';
+import Profile from './Profile';
+import ChatItem from './ChatItem';
+
+const LeftNav = ({ profile, chats, friends }) => {
+  const toggleContacts = () => {
+    const mainComp = document.getElementById('mainComp');
+    mainComp.style.width = '432px';
+  };
+  const toggleProfile = () => {
+    const mainComp = document.getElementById('myProfile');
+    mainComp.style.width = '432px';
+  };
+  console.log('PROFILE', profile);
   return (
     <>
       <>
@@ -14,7 +27,11 @@ const LeftNav = () => {
             src="https://www.svgrepo.com/show/170303/avatar.svg"
             alt="avatar"
             className="avatar-img-style"
-          />{' '}
+            onClick={() => toggleProfile()}
+          />
+          <span className="profile-user-header">
+            {profile && profile.firstName}
+          </span>
           <div className="icons-span">
             <span className="icons-wrapper">
               <BiLoaderCircle className="icons-profile-style" />
@@ -23,7 +40,10 @@ const LeftNav = () => {
               <BsThreeDotsVertical className="icons-profile-style" />
             </span>
             <span className="icons-wrapper">
-              <BiMessageDetail className="icons-profile-style" />
+              <BiMessageDetail
+                onClick={() => toggleContacts()}
+                className="icons-profile-style"
+              />
             </span>
           </div>
         </div>
@@ -39,8 +59,19 @@ const LeftNav = () => {
             />
           </div>
         </Col>
+        <Contacts friends={friends} />
+        <Profile profile={profile} />
 
-        <div className="chats-list">chats</div>
+        {chats &&
+          chats.map((item) => (
+            <ChatItem
+              owner={profile.lastName}
+              participants={item.chat.participants}
+              id={item.chat._id}
+              message={item.chat.latestMessage.text}
+              time={item.chat.latestMessage.updatedAt}
+            />
+          ))}
       </>
     </>
   );

@@ -1,5 +1,5 @@
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #e5ddd5;
 }
 .green-part {
@@ -22,15 +22,15 @@ body {
 }
 
 .logo-main-img {
-  height: 80px;
+  height: 56px;
   position: absolute;
-  top: 50px;
+  top: 30px;
   left: 150px;
 }
 .text-logo {
   position: relative;
-  left: 240px;
-  top: 80px;
+  left: 220px;
+  top: 44px;
   color: white;
 }
 .no-border {
@@ -42,7 +42,7 @@ body {
     height: 20vh;
   }
   .logo-main-img {
-    height: 80px;
+    height: 56px;
     position: absolute;
     top: 40px;
     left: 60px;
@@ -56,15 +56,15 @@ body {
 }
 @media (min-width: 1070px) {
   .logo-main-img {
-    height: 80px;
+    height: 56px;
     position: absolute;
-    top: 80px;
+    top: 64px;
     left: 280px;
   }
   .text-logo {
     position: relative;
     left: 360px;
-    top: 110px;
+    top: 79px;
     color: white;
   }
 }
