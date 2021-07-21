@@ -4,9 +4,28 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import { BsFillMicFill } from 'react-icons/bs';
 import { FormControl } from 'react-bootstrap';
 import 'react-chat-elements/dist/main.css';
-import { MessageList, ChatItem, MessageBox } from 'react-chat-elements';
+import { MessageList } from 'react-chat-elements';
+import { LoginContext } from './GlobalState';
+import { useContext } from 'react';
+import { getRequest } from '../lib/axios';
+import { useState } from 'react';
 
 const MainChat = () => {
+  const [messages, setMessages] = useState();
+  const { selectedChat } = useContext(LoginContext);
+
+  const getChatDetails = async () => {
+    try {
+      const res = await getRequest(`chat/${selectedChat}`);
+      if (res.status === 200) {
+        console.log(res);
+        setMessages(res.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <Col md={12}>
@@ -24,10 +43,11 @@ const MainChat = () => {
             toBottomHeight={'100%'}
             dataSource={[
               {
-                position: 'right',
+                position: 'left',
                 type: 'text',
                 text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit',
                 date: new Date(),
+                user: 'me',
               },
               {
                 position: 'right',

@@ -23,14 +23,16 @@ const Profile = ({ profile }) => {
 
         <Row>
           <Col md={12}>
-            <div className="contacts-div-text">{profile.lastName}</div>
+            <div className="contacts-div-text">
+              {profile && profile.lastName}
+            </div>
           </Col>
         </Row>
         <Row>
           <Col>
             <div className="profile-avatar-wrapper">
               <img
-                src={profile.avatar}
+                src={profile && profile.avatar}
                 className="profile-avatar"
                 alt="profile-avatar"
               />

@@ -91,7 +91,7 @@
 .chat-list-item {
   border-bottom: 1px solid rgb(189, 186, 186);
   border-right: 1px solid rgb(189, 186, 186);
-
+  cursor: pointer;
   background-color: whitesmoke;
   padding-right: 10px;
 }

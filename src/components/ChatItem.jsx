@@ -4,8 +4,6 @@ import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
 
 const ChatItem = ({ id, participants, message, time, owner }) => {
-  console.log(time);
-
   return (
     <>
       <div className="chat-list-item">
@@ -19,9 +17,10 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
           </Col>
           <Col sm={8}>
             <div className="chat-item-contact">
-              {participants
-                .filter((i) => i.profile.lastName !== owner)
-                .map((single) => single.profile.lastName)}
+              {participants &&
+                participants
+                  .filter((i) => i.profile.lastName !== owner)
+                  .map((single) => single.profile.lastName)}
             </div>
             <div className="chat-item-messaage">
               {message ? message : 'lack of content'}
