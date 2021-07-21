@@ -1,4 +1,4 @@
-import { Col } from 'react-bootstrap';
+import { Col, Form } from 'react-bootstrap';
 import './styles/MainChat.css';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { BsFillMicFill } from 'react-icons/bs';
@@ -10,10 +10,15 @@ import { useContext, useEffect } from 'react';
 import { getRequest } from '../lib/axios';
 import { useState } from 'react';
 import parseISO from 'date-fns/parseISO';
-import format from 'date-fns/format';
+import { io } from 'socket.io-client';
+
+const ADDRESS = process.env.REACT_APP_BE_URL;
+const socket = io(ADDRESS, { transports: ['websocket'] });
 
 const MainChat = () => {
   const [messages, setMessages] = useState();
+  const [messageReceived, setMessageReceived] = useState();
+  const [newMessage, setNewMessage] = useState('');
   const { selectedChat, user } = useContext(LoginContext);
 
   const getChatDetails = async () => {
@@ -21,7 +26,6 @@ const MainChat = () => {
       try {
         const res = await getRequest(`chat/${selectedChat}`);
         if ((res.status = 200)) {
-          console.log(res.data.history);
           setMessages(res.data.history);
         }
       } catch (error) {
@@ -29,11 +33,28 @@ const MainChat = () => {
       }
     }
   };
-  // getChatDetails();
+
+  const messageToSend = {
+    text: newMessage,
+    _id: socket.id,
+    chatId: selectedChat,
+    date: new Date(),
+  };
+
+  const handleSubmit = () => {
+    console.log(newMessage);
+    console.log(messageToSend);
+    socket.emit('send-message', messageToSend, selectedChat);
+    setNewMessage('');
+  };
 
   useEffect(() => {
     getChatDetails();
+    socket.on('receive-message', (message) => {
+      messages.push(message);
+    });
   }, [selectedChat]);
+
   return (
     <>
       <Col md={12}>
@@ -71,7 +92,14 @@ const MainChat = () => {
                 <FormControl
                   type="text"
                   placeholder="Type your message..."
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
                   className="message-input-main-chat"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSubmit();
+                    }
+                  }}
                 />
                 <span>
                   <BsFillMicFill className="voice-message-icon" />

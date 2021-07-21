@@ -25,6 +25,7 @@ function App() {
         socket.emit('connect-chats', data.data._id, data.data.chats);
       }
     } catch (error) {
+      console.log(error);
       if (error.response.status === 401) {
         setLoggedIn(false);
       } else {
