@@ -15,6 +15,8 @@ function App() {
     <Router>
       <BackGround />
       <Route component={LoginPage} path="/" exact />
+
+      {/* <Route component={Home} path="/home" exact /> */}
       <Route exact path="/home">
         {!loggedIn ? <Redirect to="/" /> : <Home />}
       </Route>

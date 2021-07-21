@@ -65,9 +65,10 @@ function LoginPage({ history }) {
           history.push("/home");
           // saving to gState and redirect to Home and establish connection with socketio
         }
-      } // else {
-      //   setValidation(false);
-      // }
+      } else {
+        setValidation(false);
+        setLoading(false);
+      }
     } catch (error) {
       setLoading(false);
       if (error.response.status === 401) {
