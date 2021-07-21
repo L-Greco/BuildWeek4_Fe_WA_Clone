@@ -1,4 +1,4 @@
-import { Button, Modal, Col, Container, Row, Form } from "react-bootstrap";
+import { Modal, Col, Container, Row, Form } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { BiExit } from "react-icons/bi";
 import "../styles/LoginForm.css";
@@ -65,8 +65,6 @@ function LoginForm({ showModal, hideModal }) {
   useEffect(() => {
     setShow(showModal);
   }, [showModal]);
-
-  const handleShow = () => setShow(true);
 
   return (
     <>
