@@ -1,7 +1,7 @@
-import { Container, Row, Col } from 'react-bootstrap';
-import LeftNav from './LeftNav';
-import MainChat from './MainChat';
-import '../index.css';
+import { Container, Row, Col } from "react-bootstrap";
+import LeftNav from "./LeftNav";
+import MainChat from "./MainChat";
+import "../index.css";
 
 const Home = () => {
   return (
