@@ -10,7 +10,7 @@ import { LoginContext } from './GlobalState';
 import { io } from 'socket.io-client';
 
 const ADDRESS = process.env.REACT_APP_BE_URL;
-const socket = io(ADDRESS, { transports: ['websocket'] });
+export const socket = io(ADDRESS, { transports: ['websocket'] });
 
 function LoginPage({ history }) {
   const [signUp, setSignUp] = useState(false);
@@ -25,8 +25,6 @@ function LoginPage({ history }) {
         // with on we're listening for an event
         console.log('we are connected with id: ', socket.id);
       });
-
-      socket.emit('connect-chats', user._id, user.chats);
     }
   }, [loggedIn]);
   const hideModal = () => {
@@ -55,13 +53,11 @@ function LoginPage({ history }) {
           },
         });
         if (res.status === 200) {
-          console.log(res);
           setValidation(true);
           setUser(res.data);
+          socket.emit('connect-chats', user._id, user.chats);
           setLoggedIn(true);
           setLoading(false);
-
-          // console.log(res);
           history.push('/home');
           // saving to gState and redirect to Home and establish connection with socketio
         }
@@ -146,7 +142,10 @@ function LoginPage({ history }) {
         }}
       >
         <Container>
-          <Form className="py-5 px-5 w-sm-100 w-lg-50 mx-auto">
+          <Form
+            className="py-5 px-5 w-sm-100 w-lg-50 mx-auto"
+            onSubmit={(e) => e.preventDefault()}
+          >
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email</Form.Label>
               <Form.Control
