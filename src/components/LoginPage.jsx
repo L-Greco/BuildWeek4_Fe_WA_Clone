@@ -10,7 +10,7 @@ import { LoginContext } from "./GlobalState";
 import { io } from "socket.io-client";
 
 const ADDRESS = process.env.REACT_APP_BE_URL;
-const socket = io(ADDRESS, { transports: ["websocket"] });
+export const socket = io(ADDRESS, { transports: ["websocket"] });
 
 function LoginPage({ history }) {
   const [signUp, setSignUp] = useState(false);
