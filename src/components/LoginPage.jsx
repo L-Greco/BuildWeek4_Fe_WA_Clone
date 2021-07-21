@@ -1,22 +1,38 @@
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Spinner } from 'react-bootstrap';
 import '../styles/LoginPage.css';
 import { BiDotsVerticalRounded } from 'react-icons/bi';
 import { BsGearWideConnected } from 'react-icons/bs';
 import LoginForm from './LoginForm';
 import QRCode from 'react-qr-code';
-import { useState, useRef, useContext } from 'react';
+import { useState, useRef, useContext, useEffect } from 'react';
 import { getRequest } from '../lib/axios';
 import { LoginContext } from './GlobalState';
+import { io } from 'socket.io-client';
+
+const ADDRESS = process.env.REACT_APP_BE_URL;
+const socket = io(ADDRESS, { transports: ['websocket'] });
 
 function LoginPage({ history }) {
   const [signUp, setSignUp] = useState(false);
   const [validation, setValidation] = useState(true);
+  const [Loading, setLoading] = useState(false);
   const { setUser } = useContext(LoginContext);
+  const { loggedIn, setLoggedIn, user } = useContext(LoginContext);
 
+  useEffect(() => {
+    if (loggedIn) {
+      socket.on('loggedIn', (arg) => {
+        // with on we're listening for an event
+        console.log('we are connected with id: ', socket.id);
+      });
+
+      socket.emit('connect-chats', user._id, user.chats);
+    }
+  }, [loggedIn]);
   const hideModal = () => {
     setSignUp(false);
   };
-  const userName = useRef(null);
+  const email = useRef(null);
   // .current points to the html Object atm
   // so value === current.value
   const password = useRef(null);
@@ -25,26 +41,40 @@ function LoginPage({ history }) {
     return new Buffer(input).toString('base64');
   };
 
-  const submitHandler = async () => {
+  const submitHandler = async (e) => {
+    e.preventDefault();
     try {
-      if (userName.current.value !== null && password.current.value !== null) {
+      setLoading(true);
+
+      if (email.current.value !== '' && password.current.value !== '') {
         const res = await getRequest('users/login', {
           headers: {
             Authorization: `Basic ${base64(
-              [userName.current.value, password.current.value].join(':')
+              [email.current.value, password.current.value].join(':')
             )}`,
           },
         });
         if (res.status === 200) {
+          console.log(res);
           setValidation(true);
           setUser(res.data);
-          console.log(res);
+          setLoggedIn(true);
+          setLoading(false);
+
+          // console.log(res);
           history.push('/home');
-          // saving to gState and redirect to Home
+          // saving to gState and redirect to Home and establish connection with socketio
         }
+      } else {
+        setValidation(false);
+        setLoading(false);
       }
     } catch (error) {
+      setLoading(false);
       if (error.response.status === 401) {
+        socket.emit('offline', user._id);
+        setUser({});
+        setLoggedIn(false);
         setValidation(false);
       } else {
         alert(error.message);
@@ -118,12 +148,12 @@ function LoginPage({ history }) {
         <Container>
           <Form className="py-5 px-5 w-sm-100 w-lg-50 mx-auto">
             <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Username</Form.Label>
+              <Form.Label>Email</Form.Label>
               <Form.Control
                 isInvalid={!validation}
                 type="text"
-                ref={userName}
-                placeholder="Enter your Username"
+                ref={email}
+                placeholder="Enter your email"
               />
             </Form.Group>
 
@@ -136,6 +166,9 @@ function LoginPage({ history }) {
                 placeholder="Password"
               />
             </Form.Group>
+            {!validation && (
+              <p className="wrongValidation">Wrong Credentials </p>
+            )}
             <div
               style={{
                 display: 'flex',
@@ -144,9 +177,23 @@ function LoginPage({ history }) {
                 alignItems: 'center',
               }}
             >
-              <Button onClick={() => submitHandler()} variant="primary">
-                Log In
-              </Button>
+              <button
+                onClick={(e) => submitHandler(e)}
+                className={Loading ? 'disabledButton' : 'loginFormSubmitButton'}
+                disabled={Loading}
+              >
+                {!Loading ? 'Log In' : 'Loading'}
+                {'  '}
+                {Loading && (
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                )}
+              </button>
               <div
                 className="GreenLink ml-2 ml-md-0"
                 onClick={() => setSignUp(true)}
