@@ -53,11 +53,11 @@ const Contacts = ({ friends }) => {
         {friends.map((item) => (
           <Row>
             <Col md={2}>
-              <div className="icon-wrapper">
-                <span className="group-icon">
+              <div className="avatar-wrapper">
+                <span className="avatar-div">
                   <img
                     src={item.profile.avatar}
-                    className="group-icon-style"
+                    className="avatar-img"
                     alt="contact-avatar"
                   />
                 </span>

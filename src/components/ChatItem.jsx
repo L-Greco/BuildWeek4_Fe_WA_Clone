@@ -1,7 +1,11 @@
 import './styles/LeftNav.css';
 import { Row, Col } from 'react-bootstrap';
+import parseISO from 'date-fns/parseISO';
+import format from 'date-fns/format';
 
-const ChatItem = ({ id }) => {
+const ChatItem = ({ id, participants, message, time, owner }) => {
+  console.log(time);
+
   return (
     <>
       <div className="chat-list-item">
@@ -14,11 +18,19 @@ const ChatItem = ({ id }) => {
             />{' '}
           </Col>
           <Col sm={8}>
-            <div className="chat-item-contact">id of the chat</div>
-            <div className="chat-item-messaage">{id}</div>
+            <div className="chat-item-contact">
+              {participants
+                .filter((i) => i.profile.lastName !== owner)
+                .map((single) => single.profile.lastName)}
+            </div>
+            <div className="chat-item-messaage">
+              {message ? message : 'lack of content'}
+            </div>
           </Col>
           <Col sm={2}>
-            <div className="chat-item-time"> 11:28</div>
+            <div className="chat-item-time">
+              {time ? format(parseISO(time), 'HH:mm') : 'nothing'}
+            </div>
           </Col>
         </Row>
       </div>

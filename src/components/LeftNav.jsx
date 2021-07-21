@@ -6,20 +6,19 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { BiMessageDetail, BiLoaderCircle } from 'react-icons/bi';
 
 import Contacts from './Contacts.jsx';
+import Profile from './Profile';
 import ChatItem from './ChatItem';
-import { useState } from 'react';
 
 const LeftNav = ({ profile, chats, friends }) => {
-  const [selected, setSelected] = useState(false);
-
-  const handleClick = (e) => {
-    setSelected(true);
-  };
   const toggleContacts = () => {
     const mainComp = document.getElementById('mainComp');
     mainComp.style.width = '432px';
   };
-
+  const toggleProfile = () => {
+    const mainComp = document.getElementById('myProfile');
+    mainComp.style.width = '432px';
+  };
+  console.log('PROFILE', profile);
   return (
     <>
       <>
@@ -28,6 +27,7 @@ const LeftNav = ({ profile, chats, friends }) => {
             src="https://www.svgrepo.com/show/170303/avatar.svg"
             alt="avatar"
             className="avatar-img-style"
+            onClick={() => toggleProfile()}
           />
           <span className="profile-user-header">{profile.lastName}</span>
           <div className="icons-span">
@@ -58,9 +58,18 @@ const LeftNav = ({ profile, chats, friends }) => {
           </div>
         </Col>
         <Contacts friends={friends} />
+        <Profile profile={profile} />
 
         {chats &&
-          chats.map((chat) => <ChatItem key={chat.chat} id={chat.chat} />)}
+          chats.map((item) => (
+            <ChatItem
+              owner={profile.lastName}
+              participants={item.chat.participants}
+              id={item.chat._id}
+              message={item.chat.latestMessage.text}
+              time={item.chat.latestMessage.updatedAt}
+            />
+          ))}
       </>
     </>
   );

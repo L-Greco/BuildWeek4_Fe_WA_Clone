@@ -102,7 +102,7 @@ class LoginPage extends Component {
               >
                 <Button variant="primary" type="submit">
                   Log In
-                </Button>
+                </Button >
                 <div
                   className="GreenLink ml-2 ml-md-0"
                   onClick={() => this.setState({ signUp: true })}
