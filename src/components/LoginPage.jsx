@@ -32,7 +32,7 @@ function LoginPage({ history }) {
   const hideModal = () => {
     setSignUp(false);
   };
-  const userName = useRef(null);
+  const email = useRef(null);
   // .current points to the html Object atm
   // so value === current.value
   const password = useRef(null);
@@ -46,11 +46,11 @@ function LoginPage({ history }) {
     try {
       setLoading(true);
 
-      if (userName.current.value !== "" && password.current.value !== "") {
+      if (email.current.value !== "" && password.current.value !== "") {
         const res = await getRequest("users/login", {
           headers: {
             Authorization: `Basic ${base64(
-              [userName.current.value, password.current.value].join(":")
+              [email.current.value, password.current.value].join(":")
             )}`,
           },
         });
@@ -148,12 +148,12 @@ function LoginPage({ history }) {
         <Container>
           <Form className="py-5 px-5 w-sm-100 w-lg-50 mx-auto">
             <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Username</Form.Label>
+              <Form.Label>Email</Form.Label>
               <Form.Control
                 isInvalid={!validation}
                 type="text"
-                ref={userName}
-                placeholder="Enter your Username"
+                ref={email}
+                placeholder="Enter your email"
               />
             </Form.Group>
 

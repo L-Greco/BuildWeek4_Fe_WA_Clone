@@ -9,7 +9,7 @@ import { useContext } from "react"
 
 
 function App() {
-  const { loggedIn, setLoggedIn, user } = useContext(LoginContext);
+  const { loggedIn } = useContext(LoginContext);
   return (
 
     <Router>
