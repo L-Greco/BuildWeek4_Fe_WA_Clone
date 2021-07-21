@@ -4,11 +4,12 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import GlobalState from "../src/components/GlobalState"
 
 ReactDOM.render(
-  <React.StrictMode>
+  <GlobalState>
     <App />
-  </React.StrictMode>,
+  </GlobalState>,
   document.getElementById('root')
 );
 
