@@ -6,10 +6,34 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import LoginPage from './components/LoginPage';
 import { LoginContext } from "../src/components/GlobalState";
 import { useContext } from "react"
+import { getRequest } from './lib/axios';
+import { useEffect } from 'react';
 
 
 function App() {
-  const { loggedIn, setLoggedIn, user } = useContext(LoginContext);
+  const { loggedIn, setLoggedIn, setUser } = useContext(LoginContext);
+
+
+  const isLogged = async () => {
+    try {
+      const data = await getRequest(`users/me`);
+      if (data.status === 200) {
+        setLoggedIn(true);
+        setUser(data.data);
+      }
+    } catch (error) {
+      if (error.response.status === 401) {
+        setLoggedIn(false);
+      } else {
+        setLoggedIn(true);
+      }
+    }
+  };
+  useEffect(() => {
+    isLogged();
+  }, [loggedIn]);
+
+
   return (
 
     <Router>
