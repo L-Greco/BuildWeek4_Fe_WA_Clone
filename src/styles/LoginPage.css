@@ -83,3 +83,13 @@
     font-size: 16px;
   }
 }
+
+.disabledButton {
+  background-color: rgb(30, 190, 165);
+  color: white;
+  border-radius: 5px;
+  border: none;
+  transition: 0.2s linear;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  cursor: not-allowed;
+}
