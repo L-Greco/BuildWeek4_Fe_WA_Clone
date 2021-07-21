@@ -8,7 +8,7 @@ import { LoginContext } from "../src/components/GlobalState";
 import { io } from "socket.io-client";
 
 import { getRequest } from './lib/axios';
-import { useEffect, useContext} from 'react';
+import { useEffect, useContext } from 'react';
 
 const ADDRESS = process.env.REACT_APP_BE_URL;
 export const socket = io(ADDRESS, { transports: ["websocket"] });
@@ -34,15 +34,15 @@ function App() {
     }
   };
   useEffect(() => {
-      isLogged();
+    isLogged();
   }, [loggedIn]);
- 
+
 
 
   return (
 
     <Router>
-       {!loggedIn && <Redirect to='/' />}
+      {!loggedIn && <Redirect to='/' />}
       {loggedIn && <Redirect to='/home' />}
       <BackGround />
       <Route component={LoginPage} path="/" exact />
