@@ -124,9 +124,8 @@ const LeftNav = ({ profile, chats, friends }) => {
               <Users key={user._id} user={user} />
             </div>
           ))
-        : chats &&
-          chats.length > 0 &&
-          chats.map((item) => (
+        : chats.length > 0
+        ? chats.map((item) => (
             <ChatItem
               key={item._id}
               owner={profile.lastName}
@@ -135,7 +134,8 @@ const LeftNav = ({ profile, chats, friends }) => {
               message={item.chat.latestMessage.text}
               time={item.chat.latestMessage.updatedAt}
             />
-          ))}
+          ))
+        : null}
     </>
   );
 };
