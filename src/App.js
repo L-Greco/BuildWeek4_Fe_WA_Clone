@@ -30,7 +30,7 @@ function App() {
         setLoggedIn(true);
         setUser(data.data);
 
-        if (data.data.chats.length > 0) {
+        if (data.data.chats.length > 0 && data.data.chats !== undefined) {
           setSelectedChat(data.data.chats[0].chat._id);
           setChatPartner({
             name: data.data.chats[0].chat.participants.find((el) => {
