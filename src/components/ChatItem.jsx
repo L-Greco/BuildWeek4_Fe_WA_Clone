@@ -32,11 +32,14 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
     <>
       <div
         className='chat-list-item'
+        style={{
+          backgroundColor: `${selectedChat === id ? "#EBEBEB" : "#fff"}`,
+        }}
         onClick={() => {
           setChatPartner({
             name: participants.find((el) => {
               return el.profile.email !== user.profile.email;
-            }).profile.email,
+            }).profile.firstName,
             avatar: participants.find((el) => {
               return el.profile.email !== user.profile.email;
             }).profile.avatar,
@@ -61,7 +64,7 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
               {participants &&
                 participants
                   .filter((i) => i.profile.email !== user.profile.email)
-                  .map((single) => single.profile.email)}
+                  .map((single) => single.profile.firstName)}
             </div>
             <div className='chat-item-messaage'>
               {message ? message : "lack of content"}

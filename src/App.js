@@ -19,7 +19,6 @@ function App() {
     setLoggedIn,
     setUser,
     setSelectedChat,
-    user,
     setChatPartner,
   } = useContext(LoginContext);
 
@@ -35,7 +34,7 @@ function App() {
           setChatPartner({
             name: data.data.chats[0].chat.participants.find((el) => {
               return el.profile.email !== data.data.profile.email;
-            }).profile.email,
+            }).profile.firstName,
             avatar: data.data.chats[0].chat.participants.find((el) => {
               return el.profile.email !== data.data.profile.email;
             }).profile.avatar,
