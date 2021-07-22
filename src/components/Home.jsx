@@ -11,7 +11,7 @@ const Home = () => {
   const { user } = useContext(LoginContext);
   return (
     <Container>
-      <Row className='main-div-home'>
+      <Row className="main-div-home">
         <Col md={4}>
           <LeftNav
             profile={user.profile}

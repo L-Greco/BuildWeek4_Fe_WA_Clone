@@ -2,24 +2,24 @@ import { Col, Form, Row } from "react-bootstrap";
 import "./styles/MainChat.css";
 import { FormControl } from "react-bootstrap";
 import "react-chat-elements/dist/main.css";
-import { MessageList } from "react-chat-elements";
+import { MessageList, MessageBox } from "react-chat-elements";
 import { LoginContext } from "./GlobalState";
 import { useContext, useEffect, useState, useRef } from "react";
 import { getRequest } from "../lib/axios";
 import parseISO from "date-fns/parseISO";
+import Compress from "react-image-file-resizer";
 import { socket } from "../App";
 import { gotoBottom, scrollToTop } from "../lib/helper";
 import Picker from "emoji-picker-react";
-// Icons
 import { GrEmoji } from "react-icons/gr";
 import { FiPaperclip } from "react-icons/fi";
-import { AiOutlineSearch } from "react-icons/ai";
 import { BsFillMicFill } from "react-icons/bs";
 
 const MainChat = () => {
   const [newMessage, setNewMessage] = useState("");
   const [chosenEmoji, setChosenEmoji] = useState(null);
   const [emojiClicked, setEmojiClicked] = useState(false);
+  const [image, setImage] = useState("");
   const {
     selectedChat,
     user,
@@ -117,6 +117,42 @@ const MainChat = () => {
   }
   useOutsideAlerter(pickerRef);
 
+  // image Input Logic
+
+  const imageInput = () => {
+    let input = document.getElementById("imageInput");
+    input.click();
+  };
+  // image to uri
+  const imageToUri = async () => {
+    let input = document.getElementById("imageInput");
+    if (input.files[0]) {
+      const file = input.files[0];
+      const type = file.type.replace("image/", "");
+      // console.log(type);
+      // let dataUrl = await new Promise((resolve) => {
+      //   let reader = new FileReader();
+      //   reader.onload = () => resolve(reader.result);
+      //   reader.readAsDataURL(file);
+      // });
+      Compress.imageFileResizer(
+        file, // the file from input
+        300, // width
+        300, // height
+        type, // compress format WEBP, JPEG, PNG
+        20, // quality
+        0, // rotation
+        (uri) => {
+          setImage(uri);
+          // You upload logic goes here
+          console.log(uri);
+        },
+        "base64" // blob or base64 default base64
+      );
+      // setImage(dataUrl);
+    }
+  };
+
   return (
     <>
       <Col md={12}>
@@ -139,6 +175,7 @@ const MainChat = () => {
           </div>
         </div>
         <div className="main-chat-view">
+          {/* workin MessageList */}
           <MessageList
             id="message-list"
             lockable={true}
@@ -155,6 +192,22 @@ const MainChat = () => {
                 .reverse()
             }
           />
+          {/* Testing MessageList */}
+          {/* // {image && (
+          //   <MessageBox
+          //     id="message-list"
+          //     position={`left`}
+          //     type={`photo`}
+          //     data={{
+          //       uri: image,
+          //       // uri: "https://cdn.pixabay.com/photo/2015/06/19/23/45/flowers-815412_960_720.jpg",
+          //       status: {
+          //         click: true,
+          //         loading: 1,
+          //       },
+          //     }}
+          //   />
+          // )} */}
           {emojiClicked && (
             <div ref={pickerRef}>
               <Picker
@@ -169,9 +222,14 @@ const MainChat = () => {
             </div>
           )}
           <div className="searching-div-main-chat">
+            <FiPaperclip
+              onClick={() => imageInput()}
+              className="mx-1 paperClip"
+            />
             <div ref={grEmoji}>
-              <GrEmoji onClick={() => toggleEmoji()} className="emoji" />
+              <GrEmoji onClick={() => toggleEmoji()} className="emoji mx-1" />
             </div>
+
             <FormControl
               type="text"
               placeholder="Type your message..."
@@ -194,6 +252,12 @@ const MainChat = () => {
           </div>
         </div>
       </Col>
+      <input
+        style={{ display: "none" }}
+        id="imageInput"
+        type={"file"}
+        onChange={() => imageToUri()}
+      />
     </>
   );
 };

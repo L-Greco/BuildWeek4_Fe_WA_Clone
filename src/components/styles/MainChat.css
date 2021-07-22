@@ -96,3 +96,8 @@
   margin-right: 2px;
   cursor: pointer;
 }
+
+.paperClip {
+  font-size: 1.2rem;
+  cursor: pointer;
+}
