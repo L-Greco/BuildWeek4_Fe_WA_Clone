@@ -1,25 +1,30 @@
-import { Col, Form } from 'react-bootstrap';
-import './styles/MainChat.css';
-import { AiOutlineSearch } from 'react-icons/ai';
-import { BsFillMicFill } from 'react-icons/bs';
-import { FormControl } from 'react-bootstrap';
-import 'react-chat-elements/dist/main.css';
-import { MessageList } from 'react-chat-elements';
-import { LoginContext } from './GlobalState';
-import { useContext, useEffect } from 'react';
-import { getRequest } from '../lib/axios';
-import { useState } from 'react';
-import parseISO from 'date-fns/parseISO';
-import { io } from 'socket.io-client';
-
-const ADDRESS = process.env.REACT_APP_BE_URL;
-const socket = io(ADDRESS, { transports: ['websocket'] });
+import { Col, Form, Row } from "react-bootstrap";
+import "./styles/MainChat.css";
+import { AiOutlineSearch } from "react-icons/ai";
+import { BsFillMicFill } from "react-icons/bs";
+import { FormControl } from "react-bootstrap";
+import "react-chat-elements/dist/main.css";
+import { MessageList } from "react-chat-elements";
+import { LoginContext } from "./GlobalState";
+import { useContext, useEffect } from "react";
+import { getRequest } from "../lib/axios";
+import { useState } from "react";
+import parseISO from "date-fns/parseISO";
+import { socket } from "../App";
+import { gotoBottom, scrollToTop } from "../lib/helper";
 
 const MainChat = () => {
-  const [messages, setMessages] = useState();
-  const [messageReceived, setMessageReceived] = useState();
-  const [newMessage, setNewMessage] = useState('');
-  const { selectedChat, user } = useContext(LoginContext);
+  const [newMessage, setNewMessage] = useState("");
+
+  const {
+    selectedChat,
+    user,
+    messages,
+    setMessages,
+    isTyping,
+    chatPartner,
+    setIsTyping,
+  } = useContext(LoginContext);
 
   const getChatDetails = async () => {
     if (selectedChat) {
@@ -36,76 +41,100 @@ const MainChat = () => {
 
   const messageToSend = {
     text: newMessage,
-    _id: socket.id,
     chatId: selectedChat,
+    userId: user._id,
     date: new Date(),
   };
 
   const handleSubmit = () => {
-    console.log(newMessage);
-    console.log(messageToSend);
-    socket.emit('send-message', messageToSend, selectedChat);
-    setNewMessage('');
+    socket.emit("send-message", messageToSend, selectedChat);
+    setMessages((h) => [...h, messageToSend]);
+    gotoBottom(".main-chat-view");
+    setNewMessage("");
   };
 
   useEffect(() => {
     getChatDetails();
-    socket.on('receive-message', (message) => {
-      messages.push(message);
-    });
+    gotoBottom(".main-chat-view");
+    scrollToTop();
   }, [selectedChat]);
+
+  useEffect(() => {
+    socket.on("receive-message", (message) => {
+      setMessages((h) => [...h, message]);
+      gotoBottom(".main-chat-view");
+    });
+    socket.on("is-typing", () => {
+      setIsTyping(true);
+      console.log("the person is typing...");
+    });
+    socket.on("stopped-typing", () => {
+      setIsTyping(false);
+      console.log("the person is typing...");
+    });
+  }, [setMessages]);
 
   return (
     <>
       <Col md={12}>
-        <div className="main-chat-view">
-          <div className="chat-header">
-            {' '}
-            <img
-              src="https://www.svgrepo.com/show/170303/avatar.svg"
-              alt="avatar"
-              className="avatar-img-style"
-            />
+        <div className='chat-header d-flex flex-row'>
+          {" "}
+          <img
+            src={chatPartner.avatar}
+            alt='avatar'
+            className='avatar-img-style'
+          />
+          <div className='d-flex flex-column'>
+            <span>{chatPartner.name}</span>
+            <span>
+              {isTyping
+                ? "...is typing"
+                : chatPartner.online
+                ? "online"
+                : "last seen"}
+            </span>
           </div>
-
+        </div>
+        <div className='main-chat-view'>
           <MessageList
+            id='message-list'
             lockable={true}
-            toBottomHeight={'100%'}
             dataSource={
               messages &&
-              messages.map((message) => {
-                return {
-                  ...message,
-                  position: user._id === message.userId ? 'right' : 'left',
-                  date: message.date ? parseISO(message.date) : 'nothing',
-                };
-              })
+              messages
+                .map((message) => {
+                  return {
+                    ...message,
+                    position: user._id === message.userId ? "right" : "left",
+                    date: message.date ? parseISO(message.date) : "nothing",
+                  };
+                })
+                .reverse()
             }
           />
-
-          <div>
-            <Col md={12}>
-              <div className="searching-div-main-chat">
-                <span>
-                  <AiOutlineSearch className="magnify-glass-main-chat" />
-                </span>{' '}
-                <FormControl
-                  type="text"
-                  placeholder="Type your message..."
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  className="message-input-main-chat"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleSubmit();
-                    }
-                  }}
-                />
-                <span>
-                  <BsFillMicFill className="voice-message-icon" />
-                </span>
-              </div>
-            </Col>
+          <div className='searching-div-main-chat'>
+            <span>
+              <AiOutlineSearch className='magnify-glass-main-chat' />
+            </span>{" "}
+            <FormControl
+              type='text'
+              placeholder='Type your message...'
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              className='message-input-main-chat'
+              onKeyDown={(e) => {
+                socket.emit("im-typing", selectedChat);
+                if (e.key === "Enter") {
+                  handleSubmit();
+                }
+              }}
+              onKeyUp={(e) => {
+                socket.emit("i-stopped-typing", selectedChat);
+              }}
+            />
+            <span>
+              <BsFillMicFill className='voice-message-icon' />
+            </span>
           </div>
         </div>
       </Col>

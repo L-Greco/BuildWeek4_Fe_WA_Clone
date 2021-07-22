@@ -54,7 +54,6 @@ function LoginForm({ showModal, hideModal }) {
       const res = await postRequest("users/register", userObject);
 
       if (res.status === 201) {
-        console.log(res.data);
         handleClose();
       }
     } catch (error) {
@@ -73,21 +72,21 @@ function LoginForm({ showModal, hideModal }) {
           <Modal.Title style={{ color: "rgb(120,190,165)" }}>
             <em>Registration Form</em>
           </Modal.Title>
-          <BiExit className="formExit" onClick={() => handleClose()} />
+          <BiExit className='formExit' onClick={() => handleClose()} />
         </Modal.Header>
         <Modal.Body>
-          <Container className="mt-3">
+          <Container className='mt-3'>
             <Row>
-              <Col className="mx-auto" sm={8}>
+              <Col className='mx-auto' sm={8}>
                 <Form>
                   <Form.Row>
                     <Col>
                       <Form.Control
-                        id="name"
+                        id='name'
                         isInvalid={firstNameValidation}
-                        placeholder="First name"
-                        pattern="[A-Za-z]{2,}"
-                        title="Type a real name please..."
+                        placeholder='First name'
+                        pattern='[A-Za-z]{2,}'
+                        title='Type a real name please...'
                         onChange={(e) =>
                           e.target.validity.valid
                             ? handleChange(e)
@@ -96,19 +95,19 @@ function LoginForm({ showModal, hideModal }) {
                         required
                       />
                       {firstNameValidation && (
-                        <p className="wrongValidation my-2">
+                        <p className='wrongValidation my-2'>
                           Please provide a real name
                         </p>
                       )}
                     </Col>
                     <Col>
                       <Form.Control
-                        id="lastName"
-                        className="mt-1"
+                        id='lastName'
+                        className='mt-1'
                         isInvalid={lastNameValidation}
-                        placeholder="Last name"
-                        pattern="[A-Za-z]{3,}"
-                        title="Type a real surname please..."
+                        placeholder='Last name'
+                        pattern='[A-Za-z]{3,}'
+                        title='Type a real surname please...'
                         onChange={(e) =>
                           e.target.validity.valid
                             ? handleChange(e)
@@ -117,53 +116,53 @@ function LoginForm({ showModal, hideModal }) {
                         required
                       />
                       {lastNameValidation && (
-                        <p className="wrongValidation my-2">
+                        <p className='wrongValidation my-2'>
                           Please provide a Last Name
                         </p>
                       )}
                     </Col>
                   </Form.Row>
                   <Form.Row>
-                    <Form.Group className="mt-1" as={Col}>
+                    <Form.Group className='mt-1' as={Col}>
                       <Form.Control
-                        id="email"
+                        id='email'
                         isInvalid={emailValidation}
                         onChange={(e) =>
                           e.target.validity.valid
                             ? handleChange(e)
                             : setEmailValidation(true)
                         }
-                        type="email"
-                        placeholder="email"
+                        type='email'
+                        placeholder='email'
                         required
                       />
                       {emailValidation && (
-                        <p className="wrongValidation my-2">
+                        <p className='wrongValidation my-2'>
                           Please provide an email
                         </p>
                       )}
                     </Form.Group>
 
-                    <Form.Group className="mt-1" as={Col}>
+                    <Form.Group className='mt-1' as={Col}>
                       <Form.Control
-                        id="password"
+                        id='password'
                         isInvalid={passwordValidation}
                         onChange={(e) =>
                           e.target.validity.valid
                             ? handleChange(e)
                             : setPasswordValidation(true)
                         }
-                        type="password"
-                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                        placeholder="Password"
+                        type='password'
+                        pattern='(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}'
+                        placeholder='Password'
                         required
-                        title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters"
+                        title='Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters'
                       />
                     </Form.Group>
                   </Form.Row>
                 </Form>
                 {passwordValidation && (
-                  <p className="wrongValidation my-2">
+                  <p className='wrongValidation my-2'>
                     Password must contain at least one number and one uppercase
                     and lowercase letter, and at least 8 or more characters
                   </p>
@@ -174,9 +173,8 @@ function LoginForm({ showModal, hideModal }) {
         </Modal.Body>
         <Modal.Footer>
           <button
-            className="my-auto mx-auto loginFormSubmitButton"
-            onClick={() => submitHandler()}
-          >
+            className='my-auto mx-auto loginFormSubmitButton'
+            onClick={() => submitHandler()}>
             Submit
           </button>
         </Modal.Footer>
