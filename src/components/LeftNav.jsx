@@ -1,7 +1,7 @@
 import "./styles/LeftNav.css";
 import { Col, FormControl, Form } from "react-bootstrap";
 import { AiOutlineSearch } from "react-icons/ai";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { BiMessageDetail, BiLoaderCircle } from "react-icons/bi";
 import Contacts from "./Contacts.jsx";
@@ -10,6 +10,7 @@ import ChatItem from "./ChatItem";
 import Users from "./Users";
 import { socket } from "../App";
 import { getRequest, postRequest } from "../lib/axios";
+import { LoginContext } from "./GlobalState";
 
 const LeftNav = ({ profile, chats, friends }) => {
   const toggleContacts = () => {
@@ -25,20 +26,42 @@ const LeftNav = ({ profile, chats, friends }) => {
   const [check, setCheck] = useState(false);
   const [groupName, setGroupName] = useState("Hell Hello");
   const [chat, setChat] = useState(null);
+  const { setUser } = useContext(LoginContext);
 
   const handleSearchInput = (event) => {
     const query = event.target.value;
     setQuery(query);
   };
 
-  const makeQuery = async (event) => {
-    const endPoint = check ? `users/me/friends/` : `users/finduser/`;
+  const getChats = async () => {
+    try {
+      const request = await getRequest("chat/me");
+      if (request.status === 200) {
+        const chats = request.data.map((ch) => {
+          return { hidden: false, chat: ch };
+        });
+        setUser((u) => {
+          return { ...u, chats: chats };
+        });
+      }
+    } catch (error) {
+      console.log();
+    }
+  };
 
-    event.preventDefault();
-    if (query && query.length > 1) {
-      const request = await getRequest(endPoint + query);
-      setUsers(request.data);
-      console.log(request);
+  const makeQuery = async (event) => {
+    try {
+      const endPoint = check ? `users/me/friends/` : `users/finduser/`;
+
+      event.preventDefault();
+      if (query && query.length > 1) {
+        const request = await getRequest(endPoint + query);
+        if (request.status === 200) {
+          setUsers(request.data);
+        }
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -47,9 +70,16 @@ const LeftNav = ({ profile, chats, friends }) => {
       name: groupName,
       participants: [participantId],
     };
-    const request = await postRequest("chat", chatObject);
-    setChat(request.data);
-    console.log(request.data);
+    try {
+      const request = await postRequest("chat", chatObject);
+      if (request.status === 200) {
+        setChat(request.data);
+        getChats();
+        setUsers(null);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleCheckBox = (event) => {
