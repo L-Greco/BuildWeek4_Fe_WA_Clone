@@ -14,7 +14,6 @@ const Home = () => {
       <Row className='main-div-home'>
         <Col md={4}>
           <LeftNav
-            id={user._id}
             profile={user.profile}
             chats={user.chats}
             friends={user.friends}

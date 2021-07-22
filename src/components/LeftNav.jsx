@@ -13,7 +13,7 @@ import Users from "./Users";
 import {socket} from "../App";
 import {getRequest, postRequest} from "../lib/axios";
 
-const LeftNav = ({id, profile, chats, friends}) => {
+const LeftNav = ({profile, chats, friends}) => {
 	const toggleContacts = () => {
 		const mainComp = document.getElementById("mainComp");
 		mainComp.style.width = "432px";
