@@ -97,8 +97,21 @@
   background-color: #ffffff;
   padding-right: 10px;
 }
+.chat-list-item:hover {
+  background-color: #b9b3b3 !important;
+}
+.chat-list-selected-item {
+  border-bottom: 1px solid rgb(233, 233, 233);
+  border-right: 1px solid rgb(189, 186, 186);
+  cursor: pointer;
+  background-color: #b9b3b3;
+  padding-right: 10px;
+}
+/* .chat-list-selected-item:hover {
+  background-color: #ffffff !important;
+} */
 .chat-list-selected {
-  background-color: rgb(175, 182, 182);
+  background-color: rgb(221, 219, 219);
 }
 .avatar-chat {
   height: 50px;
@@ -128,4 +141,8 @@
   border-radius: 50%;
   height: 60px;
   width: 60px;
+}
+
+chatRow:hover {
+  background-color: grey;
 }

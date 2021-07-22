@@ -1,4 +1,4 @@
-import { Col } from "react-bootstrap";
+import { Col, Spinner } from "react-bootstrap";
 import "./styles/MainChat.css";
 import { FormControl } from "react-bootstrap";
 import "react-chat-elements/dist/main.css";
@@ -22,6 +22,7 @@ const MainChat = () => {
   const [chosenEmoji, setChosenEmoji] = useState(null);
   const [emojiClicked, setEmojiClicked] = useState(false);
   const [image, setImage] = useState("");
+  const [loading, setLoading] = useState(false);
   const {
     selectedChat,
     user,
@@ -37,12 +38,15 @@ const MainChat = () => {
   const getChatDetails = async () => {
     if (selectedChat) {
       try {
+        setLoading(true);
         const res = await getRequest(`chat/${selectedChat}`);
         if ((res.status = 200)) {
+          setLoading(false);
           setMessages(res.data.history);
           gotoBottom(".main-chat-view");
         }
       } catch (error) {
+        setLoading(false);
         console.log(error);
       }
     }
@@ -208,6 +212,23 @@ const MainChat = () => {
           </div>
         </div>
         <div className="main-chat-view">
+          {loading && (
+            <Spinner
+              as="span"
+              animation="border"
+              size="lg"
+              role="status"
+              aria-hidden="true"
+              // className="mx-auto"
+              // variant="success"
+              style={{
+                position: "absolute",
+                top: "10%",
+                left: "66%",
+                color: "rgb(30,190,165)",
+              }}
+            />
+          )}
           {/* workin MessageList */}
           <MessageList
             className="background-message"
