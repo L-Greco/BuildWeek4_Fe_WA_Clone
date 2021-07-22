@@ -12,10 +12,13 @@ import { useState } from "react";
 import parseISO from "date-fns/parseISO";
 import { socket } from "../App";
 import { gotoBottom, scrollToTop } from "../lib/helper";
+import Picker from "emoji-picker-react";
+import { GrEmoji } from "react-icons/gr";
 
 const MainChat = () => {
   const [newMessage, setNewMessage] = useState("");
-
+  const [chosenEmoji, setChosenEmoji] = useState(null);
+  const [emojiClicked, setEmojiClicked] = useState(false);
   const {
     selectedChat,
     user,
@@ -74,17 +77,24 @@ const MainChat = () => {
     });
   }, [setMessages]);
 
+  const onEmojiClick = (event, emojiObject) => {
+    setNewMessage(newMessage + emojiObject.emoji);
+  };
+  const toggleEmoji = () => {
+    emojiClicked ? setEmojiClicked(false) : setEmojiClicked(true);
+  };
+
   return (
     <>
       <Col md={12}>
-        <div className='chat-header d-flex flex-row'>
+        <div className="chat-header d-flex flex-row">
           {" "}
           <img
             src={chatPartner.avatar}
-            alt='avatar'
-            className='avatar-img-style'
+            alt="avatar"
+            className="avatar-img-style"
           />
-          <div className='d-flex flex-column'>
+          <div className="d-flex flex-column">
             <span>{chatPartner.name}</span>
             <span>
               {isTyping
@@ -95,9 +105,9 @@ const MainChat = () => {
             </span>
           </div>
         </div>
-        <div className='main-chat-view'>
+        <div className="main-chat-view">
           <MessageList
-            id='message-list'
+            id="message-list"
             lockable={true}
             dataSource={
               messages &&
@@ -112,16 +122,28 @@ const MainChat = () => {
                 .reverse()
             }
           />
-          <div className='searching-div-main-chat'>
+          {emojiClicked && (
+            <Picker
+              pickerStyle={{
+                width: "30%",
+                height: "30%",
+                position: "fixed",
+                bottom: "5rem",
+              }}
+              onEmojiClick={onEmojiClick}
+            />
+          )}
+          <div className="searching-div-main-chat">
+            <GrEmoji onClick={() => toggleEmoji()} className="emoji" />
             <span>
-              <AiOutlineSearch className='magnify-glass-main-chat' />
+              <AiOutlineSearch className="magnify-glass-main-chat" />
             </span>{" "}
             <FormControl
-              type='text'
-              placeholder='Type your message...'
+              type="text"
+              placeholder="Type your message..."
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              className='message-input-main-chat'
+              className="message-input-main-chat"
               onKeyDown={(e) => {
                 socket.emit("im-typing", selectedChat);
                 if (e.key === "Enter") {
@@ -133,7 +155,7 @@ const MainChat = () => {
               }}
             />
             <span>
-              <BsFillMicFill className='voice-message-icon' />
+              <BsFillMicFill className="voice-message-icon" />
             </span>
           </div>
         </div>

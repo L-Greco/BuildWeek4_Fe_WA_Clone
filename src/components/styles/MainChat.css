@@ -27,10 +27,14 @@
   z-index: 1050;
 }
 .searching-div-main-chat {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   position: fixed;
   bottom: 15px;
   right: 14px;
   width: 66%;
+  padding-top: 10px;
   padding-left: 25px;
   padding-bottom: 10px;
   background-color: #e5e5e2;
@@ -39,9 +43,9 @@
 }
 
 .magnify-glass-main-chat {
-  position: relative;
+  /* position: relative;
   top: -4px;
-  right: -5px;
+  right: -5px; */
   border: 1px solid #ced4da;
   border-top-style: none;
   border-left-style: none;
@@ -50,11 +54,11 @@
   border-bottom-left-radius: 15px;
   font-size: 36px;
   border-right-style: none;
-  padding-bottom: 6px;
+  /* padding-bottom: 6px; */
   padding-left: 12px;
   padding-top: 6px;
 
-  margin-top: 4px;
+  /* margin-top: 4px; */
   background-color: white;
 }
 .message-input-main-chat {
@@ -70,9 +74,9 @@
   border-bottom-right-radius: 6px;
   border-bottom-left-radius: 0px !important;
   background-color: white !important;
-  padding-left: 20px !important;
+  /* padding-left: 20px !important; */
 
-  margin-top: 10px !important;
+  /* margin-top: 10px !important; */
 }
 .message-input-main-chat:focus {
   color: black;
@@ -85,4 +89,14 @@
   margin-left: 15px;
   font-size: 20px;
   margin-right: 10px;
+}
+
+.emoji {
+  font-size: 1.4rem;
+  margin-right: 2px;
+  cursor: pointer;
+}
+
+.emojiPicker {
+  width: 100000px;
 }
