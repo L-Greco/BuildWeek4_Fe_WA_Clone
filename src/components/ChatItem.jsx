@@ -1,25 +1,46 @@
 import "./styles/LeftNav.css";
 import { Row, Col } from "react-bootstrap";
 import parseISO from "date-fns/parseISO";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { LoginContext } from "./GlobalState";
+import { format } from "date-fns";
 
 const ChatItem = ({ id, participants, message, time, owner }) => {
-  const { setSelectedChat, setChatPartner, user } = useContext(LoginContext);
+  const {
+    setSelectedChat,
+    setChatPartner,
+    user,
+    newMessages,
+    selectedChat,
+    setNewMessages,
+  } = useContext(LoginContext);
 
+  const [newMessage, setNewMessage] = useState(false);
+
+  useEffect(() => {
+    if (newMessages.includes(id)) {
+      setNewMessages((m) => {
+        return m.filter((chatId) => newMessages.indexOf(chatId) === -1);
+      });
+      setNewMessage(true);
+    }
+    if (id === selectedChat) {
+      setNewMessage(false);
+    }
+  }, [newMessages, selectedChat]);
   return (
     <>
       <div
         className='chat-list-item'
         onClick={() => {
           setChatPartner({
-            name: user.chats[0].chat.participants.find((el) => {
+            name: participants.find((el) => {
               return el.profile.email !== user.profile.email;
             }).profile.email,
-            avatar: user.chats[0].chat.participants.find((el) => {
+            avatar: participants.find((el) => {
               return el.profile.email !== user.profile.email;
             }).profile.avatar,
-            online: user.chats[0].chat.participants.find((el) => {
+            online: participants.find((el) => {
               return el.profile.email !== user.profile.email;
             }).profile.online,
           });
@@ -46,8 +67,20 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
           </Col>
           <Col sm={2}>
             <div className='chat-item-time'>
-              {time ? parseISO(time) : "nothing"}
+              {time ? format(parseISO(time), "hh:mm") : "nothing"}
             </div>
+            {newMessage && (
+              <div
+                className=' text-white d-flex justify-content-center align-items-center'
+                style={{
+                  width: "15px",
+                  height: "16px",
+                  borderRadius: "50%",
+                  backgroundColor: "#06D755",
+                }}>
+                <span>1</span>
+              </div>
+            )}
           </Col>
         </Row>
       </div>

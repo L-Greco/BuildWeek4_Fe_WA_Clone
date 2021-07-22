@@ -1,4 +1,4 @@
-import { Col, Form, Row } from "react-bootstrap";
+import { Col } from "react-bootstrap";
 import "./styles/MainChat.css";
 import { AiOutlineSearch } from "react-icons/ai";
 import { BsFillMicFill } from "react-icons/bs";
@@ -11,7 +11,7 @@ import { getRequest } from "../lib/axios";
 import { useState } from "react";
 import parseISO from "date-fns/parseISO";
 import { socket } from "../App";
-import { gotoBottom, scrollToTop } from "../lib/helper";
+import { dateDiff, gotoBottom, scrollToTop } from "../lib/helper";
 
 const MainChat = () => {
   const [newMessage, setNewMessage] = useState("");
@@ -24,6 +24,8 @@ const MainChat = () => {
     isTyping,
     chatPartner,
     setIsTyping,
+    setChatPartner,
+    setNewMessages,
   } = useContext(LoginContext);
 
   const getChatDetails = async () => {
@@ -32,6 +34,7 @@ const MainChat = () => {
         const res = await getRequest(`chat/${selectedChat}`);
         if ((res.status = 200)) {
           setMessages(res.data.history);
+          gotoBottom(".main-chat-view");
         }
       } catch (error) {
         console.log(error);
@@ -43,56 +46,82 @@ const MainChat = () => {
     text: newMessage,
     chatId: selectedChat,
     userId: user._id,
-    date: new Date(),
+    date: new Date().toISOString(),
   };
 
   const handleSubmit = () => {
     socket.emit("send-message", messageToSend, selectedChat);
     setMessages((h) => [...h, messageToSend]);
-    gotoBottom(".main-chat-view");
     setNewMessage("");
+    gotoBottom(".main-chat-view");
   };
 
   useEffect(() => {
     getChatDetails();
-    gotoBottom(".main-chat-view");
-    scrollToTop();
   }, [selectedChat]);
 
   useEffect(() => {
     socket.on("receive-message", (message) => {
-      setMessages((h) => [...h, message]);
-      gotoBottom(".main-chat-view");
+      if (message.chatId !== selectedChat) {
+        setNewMessages((m) => {
+          return [...m, message.chatId];
+        });
+      } else {
+        console.log(message);
+        setMessages((h) => [...h, message]);
+      }
     });
-    socket.on("is-typing", () => {
-      setIsTyping(true);
-      console.log("the person is typing...");
+    socket.on("message-delivered", (check) => {
+      console.log("message-delivered", check);
     });
-    socket.on("stopped-typing", () => {
-      setIsTyping(false);
-      console.log("the person is typing...");
+    socket.on("is-typing", (chatId) => {
+      if (chatId === selectedChat) {
+        setIsTyping(true);
+      }
     });
-  }, [setMessages]);
+    socket.on("stopped-typing", (chatId) => {
+      if (chatId === selectedChat) {
+        setIsTyping(false);
+      }
+    });
+    socket.on("logged-out", (chatId) => {
+      if (chatId !== selectedChat) {
+        setChatPartner((cp) => {
+          return { ...cp, online: false, lastSeen: new Date().toISOString() };
+        });
+      }
+    });
+    socket.on("logged-in", (chatId) => {
+      if (chatId === selectedChat) {
+        setChatPartner((cp) => {
+          return { ...cp, online: true };
+        });
+      }
+    });
+  }, []);
 
   return (
     <>
       <Col md={12}>
         <div className='chat-header d-flex flex-row'>
-          {" "}
-          <img
-            src={chatPartner.avatar}
-            alt='avatar'
-            className='avatar-img-style'
-          />
-          <div className='d-flex flex-column'>
-            <span>{chatPartner.name}</span>
-            <span>
-              {isTyping
-                ? "...is typing"
-                : chatPartner.online
-                ? "online"
-                : "last seen"}
-            </span>
+          <div className='d-flex justify-content-center align-items-center'>
+            <img
+              src={chatPartner.avatar}
+              alt='avatar'
+              className='avatar-img-style'
+            />
+            <div
+              className='d-flex flex-column ms-2'
+              style={{ marginTop: "10px" }}>
+              <span>{chatPartner.name}</span>
+              <span>
+                {isTyping
+                  ? "...is typing"
+                  : chatPartner.online
+                  ? "online"
+                  : "last seen " + dateDiff(chatPartner.lastSeen, Date.now())}
+              </span>
+            </div>
           </div>
         </div>
         <div className='main-chat-view'>

@@ -9,11 +9,14 @@ const GlobalState = ({ children }) => {
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [chatPartner, setChatPartner] = useState({});
+  const [newMessages, setNewMessages] = useState([]);
   return (
     <LoginContext.Provider
       value={{
         user,
         chatPartner,
+        newMessages,
+        setNewMessages,
         setChatPartner,
         setUser,
         isTyping,

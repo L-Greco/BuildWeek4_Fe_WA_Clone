@@ -69,7 +69,7 @@ const LeftNav = ({ profile, chats, friends }) => {
               participants={item.chat.participants}
               id={item.chat._id}
               message={item.chat.latestMessage.text}
-              time={item.chat.latestMessage.updatedAt}
+              time={item.chat.latestMessage.date}
             />
           ))}
       </>
