@@ -14,7 +14,7 @@ const ADDRESS = process.env.REACT_APP_BE_URL;
 export const socket = io(ADDRESS, { transports: ['websocket'] });
 
 function App() {
-  const { loggedIn, setLoggedIn, setUser } = useContext(LoginContext);
+  const { loggedIn, setLoggedIn, setUser,setSelectedChat, user,setChatPartner } = useContext(LoginContext);
 
   const isLogged = async () => {
     try {
@@ -22,11 +22,18 @@ function App() {
       if (data.status === 200) {
         setLoggedIn(true);
         setUser(data.data);
+        setSelectedChat(data.data.chats[0].chat._id)
+        setChatPartner({
+          name: data.data.chats[0].chat.participants[0].profile.email,
+          avatar: data.data.chats[0].chat.participants[0].profile.avatar,
+          online: data.data.chats[0].chat.participants[0].profile.online,
+        });
         socket.emit('connect-chats', data.data._id, data.data.chats);
       }
     } catch (error) {
       console.log(error);
-      if (error.response.status === 401) {
+      if (error.response?.status === 401) {
+        // socket.emit("offline", user._id);
         setLoggedIn(false);
       } else {
         setLoggedIn(true);
@@ -35,6 +42,8 @@ function App() {
   };
   useEffect(() => {
     isLogged();
+
+    // return socket.emit('offline', user._id);
   }, [loggedIn]);
 
   return (
