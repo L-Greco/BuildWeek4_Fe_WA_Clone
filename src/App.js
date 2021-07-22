@@ -68,8 +68,7 @@ function App() {
       {loggedIn && <Redirect to="/home" />}
       <BackGround />
       <Route component={LoginPage} path="/" exact />
-      {/* Uncomment the line 19 and comment line 20-22 to prevent logged in behaviour */}
-      {/* <Route component={Home} path="/home" exact /> */}
+
       <Route exact path="/home">
         {!loggedIn ? <Redirect to="/" /> : <Home />}
       </Route>
