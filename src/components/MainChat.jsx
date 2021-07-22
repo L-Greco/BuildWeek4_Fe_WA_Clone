@@ -12,10 +12,14 @@ import { useState } from "react";
 import parseISO from "date-fns/parseISO";
 import { socket } from "../App";
 import { dateDiff, gotoBottom, scrollToTop } from "../lib/helper";
+import { GrEmoji } from "react-icons/gr";
+import Picker from "emoji-picker-react";
+import ChatItem from "./ChatItem";
 
 const MainChat = () => {
   const [newMessage, setNewMessage] = useState("");
-
+  const [chosenEmoji, setChosenEmoji] = useState(null);
+  const [emojiClicked, setEmojiClicked] = useState(false);
   const {
     selectedChat,
     user,
@@ -100,6 +104,45 @@ const MainChat = () => {
     });
   }, []);
 
+  // Emoji Logic from here
+
+  // Setting Emoji to messsage
+  const onEmojiClick = (event, emojiObject) => {
+    setNewMessage(newMessage + emojiObject.emoji);
+  };
+
+  const toggleEmoji = () => {
+    emojiClicked ? setEmojiClicked(false) : setEmojiClicked(true);
+  };
+  // pickerRef is the div element that wraps the emoji's box
+  const pickerRef = useRef(null);
+  const grEmoji = useRef(null);
+
+  function useOutsideAlerter(ref) {
+    useEffect(() => {
+      /**
+       * Close emoji if clicked outside
+       */
+      function handleClickOutside(event) {
+        if (
+          ref.current &&
+          !ref.current.contains(event.target) &&
+          !grEmoji.current.contains(event.target)
+        ) {
+          setEmojiClicked(false);
+        }
+      }
+
+      // Bind the event listener
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        // Unbind the event listener on clean up
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [ref]);
+  }
+  useOutsideAlerter(pickerRef);
+
   return (
     <>
       <Col md={12}>
@@ -125,7 +168,16 @@ const MainChat = () => {
           </div>
         </div>
         <div className='main-chat-view'>
+          <ChatItem
+            avatar={"https://facebook.github.io/react/img/logo.svg"}
+            alt={"Reactjs"}
+            title={"Facebook"}
+            subtitle={"What are you doing?"}
+            date={new Date()}
+            unread={0}
+          />
           <MessageList
+            className='background-message'
             id='message-list'
             lockable={true}
             dataSource={
@@ -141,7 +193,24 @@ const MainChat = () => {
                 .reverse()
             }
           />
+
+          {emojiClicked && (
+            <div ref={pickerRef}>
+              <Picker
+                pickerStyle={{
+                  width: "30%",
+                  height: "30%",
+                  position: "fixed",
+                  bottom: "5rem",
+                }}
+                onEmojiClick={onEmojiClick}
+              />
+            </div>
+          )}
           <div className='searching-div-main-chat'>
+            <div ref={grEmoji}>
+              <GrEmoji onClick={() => toggleEmoji()} className='emoji' />
+            </div>
             <span>
               <AiOutlineSearch className='magnify-glass-main-chat' />
             </span>{" "}

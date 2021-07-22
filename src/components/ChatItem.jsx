@@ -48,11 +48,13 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
         }}>
         <Row>
           <Col sm={2}>
-            <img
-              src={participants[0].profile.avatar}
-              alt='avatar'
-              className='avatar-chat'
-            />{" "}
+            <span>
+              <img
+                src={participants[0].profile.avatar}
+                alt='avatar'
+                className='list-avatar-wrapper'
+              />{" "}
+            </span>
           </Col>
           <Col sm={8}>
             <div className='chat-item-contact'>
