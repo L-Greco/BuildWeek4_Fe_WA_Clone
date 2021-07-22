@@ -14,7 +14,14 @@ const ADDRESS = process.env.REACT_APP_BE_URL;
 export const socket = io(ADDRESS, { transports: ['websocket'] });
 
 function App() {
-  const { loggedIn, setLoggedIn, setUser,setSelectedChat, user,setChatPartner } = useContext(LoginContext);
+  const {
+    loggedIn,
+    setLoggedIn,
+    setUser,
+    setSelectedChat,
+    user,
+    setChatPartner,
+  } = useContext(LoginContext);
 
   const isLogged = async () => {
     try {
@@ -22,19 +29,23 @@ function App() {
       if (data.status === 200) {
         setLoggedIn(true);
         setUser(data.data);
-        setSelectedChat(data.data.chats[0].chat._id)
-        setChatPartner({
-          name: data.data.chats[0].chat.participants.find((el) => {
-            return el.profile.email !== data.data.profile.email;
-          }).profile.email,
-          avatar: data.data.chats[0].chat.participants.find((el) => {
-            return el.profile.email !== data.data.profile.email;
-          }).profile.avatar,
-          online: data.data.chats[0].chat.participants.find((el) => {
-            return el.profile.email !== data.data.profile.email;
-          }).profile.online,
-        });
-        socket.emit('connect-chats', data.data._id, data.data.chats);
+
+        if (data.data.chats.length > 0 && data.data.chats !== undefined) {
+          setSelectedChat(data.data.chats[0].chat._id);
+          setChatPartner({
+            name: data.data.chats[0].chat.participants.find((el) => {
+              return el.profile.email !== data.data.profile.email;
+            }).profile.email,
+            avatar: data.data.chats[0].chat.participants.find((el) => {
+              return el.profile.email !== data.data.profile.email;
+            }).profile.avatar,
+            online: data.data.chats[0].chat.participants.find((el) => {
+              return el.profile.email !== data.data.profile.email;
+            }).profile.online,
+          });
+
+          socket.emit('connect-chats', data.data._id, data.data.chats);
+        }
       }
     } catch (error) {
       console.log(error);

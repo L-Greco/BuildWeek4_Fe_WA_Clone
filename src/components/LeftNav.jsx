@@ -112,9 +112,9 @@ const LeftNav = ({ profile, chats, friends }) => {
       {users !== null && query
         ? users.map((user) => (
             <div
-              onClick={async () => {
-                await makeChat(user._id);
-                await socket.emit(
+              onClick={() => {
+                makeChat(user._id);
+                socket.emit(
                   "participants-Join-room",
                   chat?._id,
                   chat?.participants
@@ -123,17 +123,18 @@ const LeftNav = ({ profile, chats, friends }) => {
               <Users key={user._id} user={user} />
             </div>
           ))
-        : chats &&
-          chats.map((item) => (
+        : chats !== undefined && chats?.length > 0
+        ? chats.map((item) => (
             <ChatItem
               key={item._id}
               owner={profile.lastName}
               participants={item.chat.participants}
               id={item.chat._id}
               message={item.chat.latestMessage.text}
-              time={item.chat.latestMessage.date}
+              time={item.chat.latestMessage.updatedAt}
             />
-          ))}
+          ))
+        : null}
     </>
   );
 };
