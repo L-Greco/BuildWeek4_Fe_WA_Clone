@@ -112,9 +112,9 @@ const LeftNav = ({ profile, chats, friends }) => {
       {users !== null && query
         ? users.map((user) => (
             <div
-              onClick={async () => {
-                await makeChat(user._id);
-                await socket.emit(
+              onClick={() => {
+                makeChat(user._id);
+                socket.emit(
                   "participants-Join-room",
                   chat?._id,
                   chat?.participants
