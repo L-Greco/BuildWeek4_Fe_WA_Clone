@@ -1,0 +1,82 @@
+.contacts-left-nav {
+  background-color: #dddbd1;
+  height: 98vh;
+  width: 0%;
+  position: absolute;
+  top: 0px;
+  z-index: 1;
+  /* bottom: -15px; */
+  overflow: hidden;
+
+  transition: 0.2s linear;
+}
+.avatar-profile {
+  height: 80px;
+  border-radius: 40px;
+}
+.navigation-new-chat {
+  height: 100px;
+  background-color: #b7ceca;
+  padding-top: 60px;
+}
+.navigation-header {
+  padding-top: 130px !important;
+  padding-left: 10px;
+  font-weight: 600;
+}
+.narrow-header {
+  margin-left: 30px;
+  font-size: 20px;
+  font-weight: 1200;
+  stroke: black;
+  cursor: pointer;
+}
+.group-icon {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+
+  border-radius: 100%;
+  background-color: #7ac2b6;
+}
+.group-icon-style {
+  font-size: 26px;
+}
+.icon-wrapper {
+  margin-top: 20px;
+  margin-left: 35px;
+}
+.new-group-div {
+  padding-top: 20px;
+}
+
+.new-group-text {
+  margin-top: 20px;
+  margin-left: 30px;
+  padding-right: 220px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid black;
+}
+.text-wrapper {
+  padding-top: 10px;
+}
+.contacts-div-text {
+  padding-top: 30px;
+  padding-left: 120px;
+  padding-bottom: 30px;
+  font-weight: 600;
+}
+.avatar-wrapper {
+  margin-bottom: 40px;
+  margin-left: 40px;
+}
+
+.avatar-img {
+  height: 50px;
+  width: 50px;
+  border-radius: 35px;
+}
+.text-wrapper-list {
+  padding-top: 10px;
+}

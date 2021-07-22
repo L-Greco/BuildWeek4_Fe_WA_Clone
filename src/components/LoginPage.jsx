@@ -1,4 +1,4 @@
-import { Container, Row, Col, Form, Button, Spinner } from "react-bootstrap";
+import { Container, Row, Col, Form, Spinner } from "react-bootstrap";
 import "../styles/LoginPage.css";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { BsGearWideConnected } from "react-icons/bs";
@@ -17,7 +17,8 @@ function LoginPage({ history }) {
   const [validation, setValidation] = useState(true);
   const [Loading, setLoading] = useState(false);
   const { setUser } = useContext(LoginContext);
-  const { loggedIn, setLoggedIn, user } = useContext(LoginContext);
+  const { loggedIn, setLoggedIn, user, setSelectedChat, setChatPartner } =
+    useContext(LoginContext);
 
   useEffect(() => {
     if (loggedIn) {
@@ -55,9 +56,21 @@ function LoginPage({ history }) {
         if (res.status === 200) {
           setValidation(true);
           setUser(res.data);
-          socket.emit("connect-chats", user._id, user.chats);
+          socket.emit("connect-chats", res.data._id, res.data.chats);
           setLoggedIn(true);
           setLoading(false);
+          setSelectedChat(res.data.chats[0].chat._id);
+          setChatPartner({
+            name: res.data.chats[0].chat.participants.find((el) => {
+              return el.profile.email !== res.data.profile.email;
+            }).profile.email,
+            avatar: res.data.chats[0].chat.participants.find((el) => {
+              return el.profile.email !== res.data.profile.email;
+            }).profile.avatar,
+            online: res.data.chats[0].chat.participants.find((el) => {
+              return el.profile.email !== res.data.profile.email;
+            }).profile.online,
+          });
           history.push("/home");
           // saving to gState and redirect to Home and establish connection with socketio
         }
@@ -67,12 +80,12 @@ function LoginPage({ history }) {
       }
     } catch (error) {
       setLoading(false);
-      if (error.response.status === 401) {
-        socket.emit("offline", user._id);
+      if (error.response?.status === 401) {
         setUser({});
         setLoggedIn(false);
         setValidation(false);
       } else {
+        console.log(error);
         alert(error.message);
       }
     }
