@@ -1,8 +1,19 @@
 .main-chat-view {
   height: 87vh;
-  position: relative;
+  display: flex;
+
+  flex-direction: column;
   background-image: url(https://theabbie.github.io/blog/assets/official-whatsapp-background-image.jpg);
   overflow-y: scroll;
+}
+.main-chat-view .rce-mlist {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-start;
+}
+
+.main-chat-view .rce-container-mlist {
+  flex-grow: 1;
 }
 ::-webkit-scrollbar {
   width: 0; /* Remove scrollbar space */

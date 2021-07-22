@@ -56,14 +56,20 @@ function LoginPage({ history }) {
         if (res.status === 200) {
           setValidation(true);
           setUser(res.data);
-          socket.emit("connect-chats", user._id, user.chats);
+          socket.emit("connect-chats", res.data._id, res.data.chats);
           setLoggedIn(true);
           setLoading(false);
-          setSelectedChat(user.chats[0].chat._id);
+          setSelectedChat(res.data.chats[0].chat._id);
           setChatPartner({
-            name: user.chats[0].chat.participants[0].profile.email,
-            avatar: user.chats[0].chat.participants[0].profile.avatar,
-            online: user.chats[0].chat.participants[0].profile.online,
+            name: res.data.chats[0].chat.participants.find((el) => {
+              return el.profile.email !== res.data.profile.email;
+            }).profile.email,
+            avatar: res.data.chats[0].chat.participants.find((el) => {
+              return el.profile.email !== res.data.profile.email;
+            }).profile.avatar,
+            online: res.data.chats[0].chat.participants.find((el) => {
+              return el.profile.email !== res.data.profile.email;
+            }).profile.online,
           });
           history.push("/home");
           // saving to gState and redirect to Home and establish connection with socketio
@@ -75,7 +81,6 @@ function LoginPage({ history }) {
     } catch (error) {
       setLoading(false);
       if (error.response?.status === 401) {
-        // socket.emit("offline", user._id);
         setUser({});
         setLoggedIn(false);
         setValidation(false);

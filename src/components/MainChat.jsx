@@ -11,7 +11,7 @@ import { getRequest } from "../lib/axios";
 import { useState } from "react";
 import parseISO from "date-fns/parseISO";
 import { socket } from "../App";
-import { gotoBottom } from "../lib/helper";
+import { gotoBottom, scrollToTop } from "../lib/helper";
 
 const MainChat = () => {
   const [newMessage, setNewMessage] = useState("");
@@ -56,6 +56,7 @@ const MainChat = () => {
   useEffect(() => {
     getChatDetails();
     gotoBottom(".main-chat-view");
+    scrollToTop();
   }, [selectedChat]);
 
   useEffect(() => {
@@ -96,16 +97,19 @@ const MainChat = () => {
         </div>
         <div className='main-chat-view'>
           <MessageList
+            id='message-list'
             lockable={true}
             dataSource={
               messages &&
-              messages.map((message) => {
-                return {
-                  ...message,
-                  position: user._id === message.userId ? "right" : "left",
-                  date: message.date ? parseISO(message.date) : "nothing",
-                };
-              })
+              messages
+                .map((message) => {
+                  return {
+                    ...message,
+                    position: user._id === message.userId ? "right" : "left",
+                    date: message.date ? parseISO(message.date) : "nothing",
+                  };
+                })
+                .reverse()
             }
           />
           <div className='searching-div-main-chat'>

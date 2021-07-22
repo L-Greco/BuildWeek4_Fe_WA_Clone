@@ -13,9 +13,15 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
         className='chat-list-item'
         onClick={() => {
           setChatPartner({
-            name: participants[0].profile.email,
-            avatar: participants[0].profile.avatar,
-            online: participants[0].profile.online,
+            name: user.chats[0].chat.participants.find((el) => {
+              return el.profile.email !== user.profile.email;
+            }).profile.email,
+            avatar: user.chats[0].chat.participants.find((el) => {
+              return el.profile.email !== user.profile.email;
+            }).profile.avatar,
+            online: user.chats[0].chat.participants.find((el) => {
+              return el.profile.email !== user.profile.email;
+            }).profile.online,
           });
           setSelectedChat(id);
         }}>
