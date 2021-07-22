@@ -6,9 +6,8 @@ import { FormControl } from "react-bootstrap";
 import "react-chat-elements/dist/main.css";
 import { MessageList } from "react-chat-elements";
 import { LoginContext } from "./GlobalState";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { getRequest } from "../lib/axios";
-import { useState } from "react";
 import parseISO from "date-fns/parseISO";
 import { socket } from "../App";
 import { gotoBottom, scrollToTop } from "../lib/helper";
@@ -77,12 +76,44 @@ const MainChat = () => {
     });
   }, [setMessages]);
 
+  // Emoji Logic from here
+
+  // Setting Emoji to messsage
   const onEmojiClick = (event, emojiObject) => {
     setNewMessage(newMessage + emojiObject.emoji);
   };
+
   const toggleEmoji = () => {
     emojiClicked ? setEmojiClicked(false) : setEmojiClicked(true);
   };
+  // pickerRef is the div element that wraps the emoji's box
+  const pickerRef = useRef(null);
+  const grEmoji = useRef(null);
+
+  function useOutsideAlerter(ref) {
+    useEffect(() => {
+      /**
+       * Close emoji if clicked outside
+       */
+      function handleClickOutside(event) {
+        if (
+          ref.current &&
+          !ref.current.contains(event.target) &&
+          !grEmoji.current.contains(event.target)
+        ) {
+          setEmojiClicked(false);
+        }
+      }
+
+      // Bind the event listener
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        // Unbind the event listener on clean up
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [ref]);
+  }
+  useOutsideAlerter(pickerRef);
 
   return (
     <>
@@ -123,18 +154,22 @@ const MainChat = () => {
             }
           />
           {emojiClicked && (
-            <Picker
-              pickerStyle={{
-                width: "30%",
-                height: "30%",
-                position: "fixed",
-                bottom: "5rem",
-              }}
-              onEmojiClick={onEmojiClick}
-            />
+            <div ref={pickerRef}>
+              <Picker
+                pickerStyle={{
+                  width: "30%",
+                  height: "30%",
+                  position: "fixed",
+                  bottom: "5rem",
+                }}
+                onEmojiClick={onEmojiClick}
+              />
+            </div>
           )}
           <div className="searching-div-main-chat">
-            <GrEmoji onClick={() => toggleEmoji()} className="emoji" />
+            <div ref={grEmoji}>
+              <GrEmoji onClick={() => toggleEmoji()} className="emoji" />
+            </div>
             <span>
               <AiOutlineSearch className="magnify-glass-main-chat" />
             </span>{" "}
