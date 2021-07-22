@@ -59,7 +59,7 @@ function LoginPage({ history }) {
 
           setLoggedIn(true);
           setLoading(false);
-          if (res.data.chats.length > 0) {
+          if (res.data.chats.length > 0 && res.data.chats !== undefined) {
             setSelectedChat(res.data.chats[0].chat._id);
             setChatPartner({
               name: res.data.chats[0].chat.participants.find((el) => {

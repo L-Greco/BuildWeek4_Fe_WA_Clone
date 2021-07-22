@@ -124,7 +124,7 @@ const LeftNav = ({ profile, chats, friends }) => {
               <Users key={user._id} user={user} />
             </div>
           ))
-        : chats.length > 0
+        : chats !== undefined && chats?.length > 0
         ? chats.map((item) => (
             <ChatItem
               key={item._id}
