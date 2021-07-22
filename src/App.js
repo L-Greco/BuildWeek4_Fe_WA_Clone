@@ -30,7 +30,7 @@ function App() {
         setLoggedIn(true);
         setUser(data.data);
 
-        if (data.data.chats) {
+        if (data.data.chats.length > 0) {
           setSelectedChat(data.data.chats[0].chat._id);
           setChatPartner({
             name: data.data.chats[0].chat.participants.find((el) => {
@@ -43,8 +43,9 @@ function App() {
               return el.profile.email !== data.data.profile.email;
             }).profile.online,
           });
+
+          socket.emit('connect-chats', data.data._id, data.data.chats);
         }
-        socket.emit('connect-chats', data.data._id, data.data.chats);
       }
     } catch (error) {
       console.log(error);
