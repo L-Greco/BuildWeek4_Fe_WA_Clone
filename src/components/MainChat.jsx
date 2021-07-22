@@ -6,7 +6,7 @@ import { FormControl } from "react-bootstrap";
 import "react-chat-elements/dist/main.css";
 import { MessageList } from "react-chat-elements";
 import { LoginContext } from "./GlobalState";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { getRequest } from "../lib/axios";
 import { useState } from "react";
 import parseISO from "date-fns/parseISO";
@@ -168,14 +168,6 @@ const MainChat = () => {
           </div>
         </div>
         <div className='main-chat-view'>
-          <ChatItem
-            avatar={"https://facebook.github.io/react/img/logo.svg"}
-            alt={"Reactjs"}
-            title={"Facebook"}
-            subtitle={"What are you doing?"}
-            date={new Date()}
-            unread={0}
-          />
           <MessageList
             className='background-message'
             id='message-list'
