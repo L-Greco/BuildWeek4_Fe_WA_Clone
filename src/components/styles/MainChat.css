@@ -70,9 +70,9 @@
   border-bottom-style: none !important;
   border-top-right-radius: 15px !important;
   border-bottom-right-radius: 15px !important;
-  border-top-left-radius: 0px !important;
+  border-top-left-radius: 15px !important;
   border-bottom-right-radius: 6px;
-  border-bottom-left-radius: 0px !important;
+  border-bottom-left-radius: 15px !important;
   background-color: white !important;
   /* padding-left: 20px !important; */
 

@@ -1,7 +1,5 @@
 import { Col, Form, Row } from "react-bootstrap";
 import "./styles/MainChat.css";
-import { AiOutlineSearch } from "react-icons/ai";
-import { BsFillMicFill } from "react-icons/bs";
 import { FormControl } from "react-bootstrap";
 import "react-chat-elements/dist/main.css";
 import { MessageList } from "react-chat-elements";
@@ -12,7 +10,11 @@ import parseISO from "date-fns/parseISO";
 import { socket } from "../App";
 import { gotoBottom, scrollToTop } from "../lib/helper";
 import Picker from "emoji-picker-react";
+// Icons
 import { GrEmoji } from "react-icons/gr";
+import { FiPaperclip } from "react-icons/fi";
+import { AiOutlineSearch } from "react-icons/ai";
+import { BsFillMicFill } from "react-icons/bs";
 
 const MainChat = () => {
   const [newMessage, setNewMessage] = useState("");
@@ -170,9 +172,6 @@ const MainChat = () => {
             <div ref={grEmoji}>
               <GrEmoji onClick={() => toggleEmoji()} className="emoji" />
             </div>
-            <span>
-              <AiOutlineSearch className="magnify-glass-main-chat" />
-            </span>{" "}
             <FormControl
               type="text"
               placeholder="Type your message..."
