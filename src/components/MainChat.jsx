@@ -53,6 +53,7 @@ const MainChat = () => {
     chatId: selectedChat,
     userId: user._id,
     date: new Date().toISOString(),
+    type: "image",
   };
 
   const handleSubmit = () => {
@@ -216,11 +217,24 @@ const MainChat = () => {
               messages &&
               messages
                 .map((message) => {
-                  return {
-                    ...message,
-                    position: user._id === message.userId ? "right" : "left",
-                    date: message.date ? parseISO(message.date) : "nothing",
-                  };
+                  if (message.type === "text") {
+                    return {
+                      ...message,
+                      position: user._id === message.userId ? "right" : "left",
+                      date: message.date ? parseISO(message.date) : "nothing",
+                    };
+                  } else
+                    return {
+                      ...message,
+                      position: user._id === message.userId ? "right" : "left",
+                      date: message.date ? parseISO(message.date) : "nothing",
+                      data: {
+                        uri: image,
+                        status: {
+                          loading: 1,
+                        },
+                      },
+                    };
                 })
                 .reverse()
             }
