@@ -1,29 +1,29 @@
-import './styles/LeftNav.css';
-import { Col, FormControl, Form } from 'react-bootstrap';
-import { AiOutlineSearch } from 'react-icons/ai';
-import { useState, useEffect } from 'react';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import { BiMessageDetail, BiLoaderCircle } from 'react-icons/bi';
-import Contacts from './Contacts.jsx';
-import Profile from './Profile';
-import ChatItem from './ChatItem';
-import Users from './Users';
-import { socket } from '../App';
-import { getRequest, postRequest } from '../lib/axios';
+import "./styles/LeftNav.css";
+import { Col, FormControl, Form } from "react-bootstrap";
+import { AiOutlineSearch } from "react-icons/ai";
+import { useState, useEffect } from "react";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { BiMessageDetail, BiLoaderCircle } from "react-icons/bi";
+import Contacts from "./Contacts.jsx";
+import Profile from "./Profile";
+import ChatItem from "./ChatItem";
+import Users from "./Users";
+import { socket } from "../App";
+import { getRequest, postRequest } from "../lib/axios";
 
 const LeftNav = ({ profile, chats, friends }) => {
   const toggleContacts = () => {
-    const mainComp = document.getElementById('mainComp');
-    mainComp.style.width = '33%';
+    const mainComp = document.getElementById("mainComp");
+    mainComp.style.width = "33%";
   };
   const toggleProfile = () => {
-    const mainComp = document.getElementById('myProfile');
-    mainComp.style.width = '33%';
+    const mainComp = document.getElementById("myProfile");
+    mainComp.style.width = "33%";
   };
   const [query, setQuery] = useState(null);
   const [users, setUsers] = useState(null);
   const [check, setCheck] = useState(false);
-  const [groupName, setGroupName] = useState('Hell Hello');
+  const [groupName, setGroupName] = useState("Hell Hello");
   const [chat, setChat] = useState(null);
 
   const handleSearchInput = (event) => {
@@ -47,7 +47,7 @@ const LeftNav = ({ profile, chats, friends }) => {
       name: groupName,
       participants: [participantId],
     };
-    const request = await postRequest('chat', chatObject);
+    const request = await postRequest("chat", chatObject);
     setChat(request.data);
     console.log(request.data);
   };
@@ -58,49 +58,49 @@ const LeftNav = ({ profile, chats, friends }) => {
 
   return (
     <>
-      <div className="profile-part-main">
+      <div className='profile-part-main'>
         <img
-          src="https://www.svgrepo.com/show/170303/avatar.svg"
-          alt="avatar"
-          className="avatar-img-style"
+          src='https://www.svgrepo.com/show/170303/avatar.svg'
+          alt='avatar'
+          className='avatar-img-style'
           onClick={() => toggleProfile()}
         />
-        <span className="profile-user-header">
+        <span className='profile-user-header'>
           {profile && profile.firstName}
         </span>
-        <div className="icons-span">
-          <span className="icons-wrapper">
-            <BiLoaderCircle className="icons-profile-style" />
+        <div className='icons-span'>
+          <span className='icons-wrapper'>
+            <BiLoaderCircle className='icons-profile-style' />
           </span>
-          <span className="icons-wrapper">
-            <BsThreeDotsVertical className="icons-profile-style" />
+          <span className='icons-wrapper'>
+            <BsThreeDotsVertical className='icons-profile-style' />
           </span>
-          <span className="icons-wrapper">
+          <span className='icons-wrapper'>
             <BiMessageDetail
               onClick={() => toggleContacts()}
-              className="icons-profile-style"
+              className='icons-profile-style'
             />
           </span>
         </div>
       </div>
       <Col md={12}>
         <Form onSubmit={makeQuery}>
-          <div className="searching-div">
-            <span className="magnify-wrapper">
-              <AiOutlineSearch className="magnify-glass-navbar" />
-            </span>{' '}
+          <div className='searching-div'>
+            <span className='magnify-wrapper'>
+              <AiOutlineSearch className='magnify-glass-navbar' />
+            </span>{" "}
             <FormControl
               onChange={handleSearchInput}
               value={query}
-              type="text"
+              type='text'
               placeholder={
-                check == true ? 'Search for contacts' : 'Search for users'
+                check == true ? "Search for contacts" : "Search for users"
               }
-              className="navbar-searching-style"
+              className='navbar-searching-style'
             />
             <input
-              type="checkbox"
-              style={{ marginLeft: '5px' }}
+              type='checkbox'
+              style={{ marginLeft: "5px" }}
               onChange={handleCheckBox}
             />
           </div>
@@ -115,12 +115,11 @@ const LeftNav = ({ profile, chats, friends }) => {
               onClick={async () => {
                 await makeChat(user._id);
                 await socket.emit(
-                  'participants-Join-room',
+                  "participants-Join-room",
                   chat?._id,
                   chat?.participants
                 );
-              }}
-            >
+              }}>
               <Users key={user._id} user={user} />
             </div>
           ))
@@ -132,7 +131,7 @@ const LeftNav = ({ profile, chats, friends }) => {
               participants={item.chat.participants}
               id={item.chat._id}
               message={item.chat.latestMessage.text}
-              time={item.chat.latestMessage.updatedAt}
+              time={item.chat.latestMessage.date}
             />
           ))
         : null}
