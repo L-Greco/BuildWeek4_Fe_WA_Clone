@@ -17,7 +17,7 @@ body {
   bottom: 15px;
   left: 15px;
   right: 15px;
-  background-color: rgb(202, 202, 223);
+  background-color: #f0f0f0;
   --bs-gutter-x: 0 !important;
 }
 
