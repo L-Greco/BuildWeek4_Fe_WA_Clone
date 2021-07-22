@@ -11,8 +11,9 @@ import Users from "./Users";
 import { socket } from "../App";
 import { getRequest, postRequest } from "../lib/axios";
 import { LoginContext } from "./GlobalState";
+import { withRouter } from "react-router-dom";
 
-const LeftNav = ({ profile, chats, friends }) => {
+const LeftNav = ({ profile, chats, friends, history }) => {
   const toggleContacts = () => {
     const mainComp = document.getElementById("mainComp");
     mainComp.style.width = "33%";
@@ -44,8 +45,11 @@ const LeftNav = ({ profile, chats, friends }) => {
           return { ...u, chats: chats };
         });
       }
+      if (request.status === 401) {
+        history.push("/");
+      }
     } catch (error) {
-      console.log();
+      console.log(error);
     }
   };
 
@@ -88,48 +92,48 @@ const LeftNav = ({ profile, chats, friends }) => {
 
   return (
     <>
-      <div className='profile-part-main'>
+      <div className="profile-part-main">
         <img
-          src='https://www.svgrepo.com/show/170303/avatar.svg'
-          alt='avatar'
-          className='avatar-img-style'
+          src="https://www.svgrepo.com/show/170303/avatar.svg"
+          alt="avatar"
+          className="avatar-img-style"
           onClick={() => toggleProfile()}
         />
-        <span className='profile-user-header'>
+        <span className="profile-user-header">
           {profile && profile.firstName}
         </span>
-        <div className='icons-span'>
-          <span className='icons-wrapper'>
-            <BiLoaderCircle className='icons-profile-style' />
+        <div className="icons-span">
+          <span className="icons-wrapper">
+            <BiLoaderCircle className="icons-profile-style" />
           </span>
-          <span className='icons-wrapper'>
-            <BsThreeDotsVertical className='icons-profile-style' />
+          <span className="icons-wrapper">
+            <BsThreeDotsVertical className="icons-profile-style" />
           </span>
-          <span className='icons-wrapper'>
+          <span className="icons-wrapper">
             <BiMessageDetail
               onClick={() => toggleContacts()}
-              className='icons-profile-style'
+              className="icons-profile-style"
             />
           </span>
         </div>
       </div>
       <Col md={12}>
         <Form onSubmit={makeQuery}>
-          <div className='searching-div'>
-            <span className='magnify-wrapper'>
-              <AiOutlineSearch className='magnify-glass-navbar' />
+          <div className="searching-div">
+            <span className="magnify-wrapper">
+              <AiOutlineSearch className="magnify-glass-navbar" />
             </span>{" "}
             <FormControl
               onChange={handleSearchInput}
               value={query}
-              type='text'
+              type="text"
               placeholder={
                 check == true ? "Search for contacts" : "Search for users"
               }
-              className='navbar-searching-style'
+              className="navbar-searching-style"
             />
             <input
-              type='checkbox'
+              type="checkbox"
               style={{ marginLeft: "5px" }}
               onChange={handleCheckBox}
             />
@@ -149,7 +153,8 @@ const LeftNav = ({ profile, chats, friends }) => {
                   chat?._id,
                   chat?.participants
                 );
-              }}>
+              }}
+            >
               <Users key={user._id} user={user} />
             </div>
           ))
@@ -168,4 +173,4 @@ const LeftNav = ({ profile, chats, friends }) => {
     </>
   );
 };
-export default LeftNav;
+export default withRouter(LeftNav);

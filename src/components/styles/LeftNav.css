@@ -98,13 +98,13 @@
   padding-right: 10px;
 }
 .chat-list-item:hover {
-  background-color: #b9b3b3 !important;
+  background-color: #ebebeb !important;
 }
 .chat-list-selected-item {
   border-bottom: 1px solid rgb(233, 233, 233);
   border-right: 1px solid rgb(189, 186, 186);
   cursor: pointer;
-  background-color: #b9b3b3;
+  background-color: #e4e2e2;
   padding-right: 10px;
 }
 /* .chat-list-selected-item:hover {
