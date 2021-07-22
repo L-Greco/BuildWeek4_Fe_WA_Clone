@@ -20,7 +20,7 @@
   background: transparent; /* Optional: just make scrollbar invisible */
 }
 .chat-header {
-  background-color: #dddbd1;
+  background-color: #ededed;
   padding-bottom: 21px;
   position: fixed;
   width: 100%;
@@ -100,4 +100,36 @@
 .paperClip {
   font-size: 1.2rem;
   cursor: pointer;
+}
+/* .background-message {
+  background-color: aquamarine;
+} */
+.rce-mbox.rce-mbox-right {
+  float: right;
+  margin-left: 5px;
+  margin-right: 20px;
+  border-top-right-radius: 0px;
+  border-top-left-radius: 5px;
+  background-color: #dcf8c6;
+}
+.rce-mbox-right-notch {
+  position: absolute;
+  right: -14px;
+  top: 0px;
+  width: 15px;
+  height: 15px;
+  fill: #dcf8c6 !important;
+  filter: drop-shadow(2px 0px 1px rgba(0, 0, 0, 0.2));
+}
+.list-avatar-wrapper2 {
+  padding-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  float: left;
+  border-radius: 50%;
+}
+.avatar-main-header {
+  height: 40px;
+  width: 40px;
+  border-radius: 30px;
 }

@@ -1,5 +1,5 @@
 .contacts-left-nav {
-  background-color: #dddbd1;
+  background-color: #ededed;
   height: 98vh;
   width: 0%;
   position: absolute;
@@ -44,7 +44,7 @@
   font-size: 26px;
 }
 .icon-wrapper {
-  margin-top: 20px;
+  margin-top: 30px;
   margin-left: 35px;
 }
 .new-group-div {
@@ -53,13 +53,15 @@
 
 .new-group-text {
   margin-top: 20px;
-  margin-left: 30px;
-  padding-right: 220px;
-  padding-bottom: 15px;
+  margin-left: 40px;
+  padding-right: 160px;
+  padding-bottom: 10px;
+
   border-bottom: 1px solid black;
 }
 .text-wrapper {
   padding-top: 10px;
+  padding-left: 0px;
 }
 .contacts-div-text {
   padding-top: 30px;
@@ -68,6 +70,7 @@
   font-weight: 600;
 }
 .avatar-wrapper {
+  margin-top: 10px;
   margin-bottom: 40px;
   margin-left: 40px;
 }
@@ -79,4 +82,12 @@
 }
 .text-wrapper-list {
   padding-top: 10px;
+}
+.contacts-name-text {
+  margin-top: 20px;
+  margin-left: 40px;
+  padding-right: 160px;
+  padding-bottom: 10px;
+
+  border-bottom: 1px solid black;
 }

@@ -1,11 +1,11 @@
-import { Container, Row, Col } from "react-bootstrap";
-import LeftNav from "./LeftNav";
-import MainChat from "./MainChat";
+import { Container, Row, Col } from 'react-bootstrap';
+import LeftNav from './LeftNav';
+import MainChat from './MainChat';
 
-import "../index.css";
+import '../index.css';
 
-import { useContext } from "react";
-import { LoginContext } from "./GlobalState";
+import { useContext } from 'react';
+import { LoginContext } from './GlobalState';
 
 const Home = () => {
   const { user } = useContext(LoginContext);

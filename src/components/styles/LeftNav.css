@@ -1,7 +1,8 @@
 .profile-part-main {
-  background-color: #dddbd1;
+  background-color: #ededed;
   padding-bottom: 20px;
   display: block;
+  border-right: 1px solid rgb(222, 206, 206);
 }
 .profile-user-header {
   padding-left: 10px;
@@ -30,9 +31,10 @@
 .searching-div {
   padding-left: 25px;
   padding-bottom: 10px;
-  background-color: #e5e5e2;
+  background-color: #f6f6f6;
   padding-right: 0px;
   --bs-gutter-x: 0 !important;
+  border-bottom: 1px solid #ced4da;
 }
 .navbar-searching-style {
   display: inline !important;
@@ -85,14 +87,14 @@
   background-image: url(https://theabbie.github.io/blog/assets/official-whatsapp-background-image.jpg);
 }
 .chat-header {
-  background-color: #dddbd1;
+  background-color: #ededed;
   padding-bottom: 21px;
 }
 .chat-list-item {
-  border-bottom: 1px solid rgb(189, 186, 186);
+  border-bottom: 1px solid rgb(233, 233, 233);
   border-right: 1px solid rgb(189, 186, 186);
   cursor: pointer;
-  background-color: whitesmoke;
+  background-color: #ffffff;
   padding-right: 10px;
 }
 .chat-list-selected {
@@ -117,4 +119,13 @@
 .chat-item-time {
   padding-top: 10px;
   font-size: 12px;
+}
+.list-avatar-wrapper {
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  float: left;
+  border-radius: 50%;
+  height: 60px;
+  width: 60px;
 }
