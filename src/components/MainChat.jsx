@@ -304,12 +304,10 @@ const MainChat = ({ history }) => {
       const res = await fetch(process.env.REACT_APP_BE_URL + "/chat/upload", {
         METHOD: "PUT",
         headers: { "Content-Type": "multipart/form-data" },
-        body: image[0],
+        body: image,
         withCredentials: true,
       });
-      // putRequest("chat/upload", image[0], {
-      //   headers: { "Content-Type": "multipart/form-data" },
-      // });
+
       if (res.ok) {
         setLoading(false);
         console.log(res);
