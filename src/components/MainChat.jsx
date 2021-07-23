@@ -196,6 +196,7 @@ const MainChat = ({ history }) => {
 
   const handleDeleteMessage = useCallback(
     (msgId, chatId) => {
+      console.log("msgId:", msgId);
       if (chatId === selectedChat) {
         setMessages((h) => h.filter((msg) => msg._id !== msgId));
       }
@@ -216,11 +217,11 @@ const MainChat = ({ history }) => {
     socket.on("stopped-typing", handledStopTyping);
     socket.on("logged-out", handleLogout);
     socket.on("logged-in", handleLogin);
-    socket.on("delete-message", handleDeleteMessage);
   }, [selectedChat]);
   // Emoji Logic from here
 
   useEffect(() => {
+    socket.on("message-deleted", handleDeleteMessage);
     socket.on("connect", handleConnect);
     socket.on("new-chat", handleNewChat);
   });
@@ -321,24 +322,23 @@ const MainChat = ({ history }) => {
   return (
     <>
       <Col md={12}>
-        <div className="chat-header d-flex flex-row">
-          <div className="d-flex justify-content-center align-items-center">
+        <div className='chat-header d-flex flex-row'>
+          <div className='d-flex justify-content-center align-items-center'>
             <img
               src={
                 chatPartner && chatPartner.avatar
                   ? chatPartner.avatar
                   : "https://image.flaticon.com/icons/png/512/4333/4333609.png"
               }
-              alt="avatar"
-              className="avatar-img-style"
+              alt='avatar'
+              className='avatar-img-style'
               onClick={() => toggleFriend()}
             />
             <div
-              className="d-flex flex-column ms-2"
-              style={{ marginTop: "10px" }}
-            >
+              className='d-flex flex-column ms-2'
+              style={{ marginTop: "10px" }}>
               <span>{chatPartner.name}</span>
-              <span className="under-chat-partner">
+              <span className='under-chat-partner'>
                 {isTyping
                   ? "...is typing"
                   : chatPartner.online
@@ -350,14 +350,14 @@ const MainChat = ({ history }) => {
             </div>
           </div>
         </div>
-        <div className="main-chat-view">
+        <div className='main-chat-view'>
           {loading && (
             <Spinner
-              as="span"
-              animation="border"
-              size="lg"
-              role="status"
-              aria-hidden="true"
+              as='span'
+              animation='border'
+              size='lg'
+              role='status'
+              aria-hidden='true'
               // className="mx-auto"
               // variant="success"
               style={{
@@ -378,7 +378,7 @@ const MainChat = ({ history }) => {
                   type={message.type}
                   removeButton={true}
                   onRemoveMessageClick={() => {
-                    console.log("delete");
+                    console.log("delete", message._id);
                     socket.emit("delete-message", message._id, message.chatId);
                   }}
                   status={
@@ -389,10 +389,10 @@ const MainChat = ({ history }) => {
                 <MessageBox
                   position={user._id === message.userId ? "right" : "left"}
                   date={message.date ? parseISO(message.date) : "nothing"}
-                  type="photo"
+                  type='photo'
                   removeButton={true}
                   onRemoveMessageClick={() => {
-                    console.log("delete");
+                    console.log(" message._id:", message._id);
                     socket.emit("delete-message", message._id, message.chatId);
                   }}
                   data={{
@@ -422,21 +422,21 @@ const MainChat = ({ history }) => {
               />
             </div>
           )}
-          <div className="searching-div-main-chat">
+          <div className='searching-div-main-chat'>
             <FiPaperclip
               onClick={() => imageInput()}
-              className="mx-1 paperClip"
+              className='mx-1 paperClip'
             />
             <div ref={grEmoji}>
-              <GrEmoji onClick={() => toggleEmoji()} className="emoji mx-1" />
+              <GrEmoji onClick={() => toggleEmoji()} className='emoji mx-1' />
             </div>
 
             <FormControl
-              type="text"
-              placeholder="Type your message..."
+              type='text'
+              placeholder='Type your message...'
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              className="message-input-main-chat"
+              className='message-input-main-chat'
               onKeyDown={(e) => {
                 socket.emit("im-typing", selectedChat);
                 if (e.key === "Enter") {
@@ -448,14 +448,14 @@ const MainChat = ({ history }) => {
               }}
             />
             <span>
-              <BsFillMicFill className="voice-message-icon" />
+              <BsFillMicFill className='voice-message-icon' />
             </span>
           </div>
         </div>
       </Col>
       <input
         style={{ display: "none" }}
-        id="imageInput"
+        id='imageInput'
         type={"file"}
         onChange={() => imageToUri()}
       />
