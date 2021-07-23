@@ -1,5 +1,5 @@
-import { differenceInCalendarDays, differenceInMinutes } from "date-fns";
-import { differenceInHours } from "date-fns/esm";
+import { differenceInCalendarDays, differenceInMinutes,differenceInHours } from "date-fns";
+
 
 export function gotoBottom(klasse){
   var element = document.querySelector(klasse);

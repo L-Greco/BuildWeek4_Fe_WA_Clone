@@ -1,8 +1,9 @@
 import { Modal, Col, Container, Row, Form } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { BiExit } from "react-icons/bi";
 import "../styles/LoginForm.css";
 import { postRequest } from "../lib/axios.js";
+import { LoginContext } from "./GlobalState";
 
 function LoginForm({ showModal, hideModal }) {
   const [show, setShow] = useState(false);
@@ -16,6 +17,7 @@ function LoginForm({ showModal, hideModal }) {
     email: "",
     password: "",
   });
+  const { setLoggedIn } = useContext(LoginContext);
 
   const handleChange = (e) => {
     let id = e.target.id;
@@ -57,7 +59,13 @@ function LoginForm({ showModal, hideModal }) {
         handleClose();
       }
     } catch (error) {
-      alert(error.message);
+      console.log(error.message);
+      if (error.response?.status === 401) {
+        // socket.emit("offline", user._id);
+        setLoggedIn(false);
+      } else {
+        setLoggedIn(true);
+      }
     }
   };
 

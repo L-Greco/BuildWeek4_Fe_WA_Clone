@@ -1,6 +1,7 @@
 .main-chat-view {
   /* height: 87vh; */
   display: flex;
+  flex-wrap: wrap;
 
   flex-direction: column;
   background-image: url(https://theabbie.github.io/blog/assets/official-whatsapp-background-image.jpg);
@@ -14,6 +15,15 @@
 
 .main-chat-view .rce-container-mlist {
   flex-grow: 1;
+}
+
+.background-message .rce-mbox::before {
+  content: "";
+  color: red;
+  background-color: #ffba10;
+  position: absolute;
+  z-index: 1050;
+  left: 0;
 }
 ::-webkit-scrollbar {
   width: 0; /* Remove scrollbar space */

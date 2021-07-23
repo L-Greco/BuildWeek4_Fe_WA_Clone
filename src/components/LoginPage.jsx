@@ -9,7 +9,6 @@ import { getRequest } from '../lib/axios';
 import { LoginContext } from './GlobalState';
 import { io } from 'socket.io-client';
 import { FcGoogle } from 'react-icons/fc';
-import {Link} from 'react-router-dom'
 
 const ADDRESS = process.env.REACT_APP_BE_URL;
 export const socket = io(ADDRESS, { transports: ['websocket'] });
@@ -18,28 +17,20 @@ function LoginPage({ history }) {
   const [signUp, setSignUp] = useState(false);
   const [validation, setValidation] = useState(true);
   const [Loading, setLoading] = useState(false);
-  const { setUser } = useContext(LoginContext);
-  const { loggedIn, setLoggedIn, user, setSelectedChat, setChatPartner } =
+
+  const { setLoggedIn, setSelectedChat, setChatPartner, setUser } =
     useContext(LoginContext);
 
-  useEffect(() => {
-    if (loggedIn) {
-      socket.on('loggedIn', (arg) => {
-        // with on we're listening for an event
-        console.log('we are connected with id: ', socket.id);
-      });
-    }
-  }, [loggedIn]);
   const hideModal = () => {
     setSignUp(false);
   };
-  const email = useRef(null);
+  const email = useRef(undefined);
   // .current points to the html Object atm
   // so value === current.value
-  const password = useRef(null);
+  const password = useRef(undefined);
 
   const base64 = (input) => {
-    return new Buffer(input).toString('base64');
+    return new Buffer(input).toString("base64");
   };
 
   const submitHandler = async (e) => {
@@ -47,21 +38,24 @@ function LoginPage({ history }) {
     try {
       setLoading(true);
 
-      if (email.current.value !== '' && password.current.value !== '') {
-        const res = await getRequest('users/login', {
+      if (email.current.value !== "" && password.current.value !== "") {
+        const res = await getRequest("users/login", {
           headers: {
             Authorization: `Basic ${base64(
-              [email.current.value, password.current.value].join(':')
+              [email.current.value, password.current.value].join(":")
             )}`,
           },
         });
         if (res.status === 200) {
           setValidation(true);
           setUser(res.data);
-
           setLoggedIn(true);
           setLoading(false);
-          if (res.data.chats.length > 0 && res.data.chats !== undefined) {
+          if (
+            res.data.chats[0].chat !== null &&
+            res.data.chats.length > 0 &&
+            res.data.chats !== undefined
+          ) {
             setSelectedChat(res.data.chats[0].chat._id);
             setChatPartner({
               name: res.data.chats[0].chat.participants.find((el) => {
@@ -74,10 +68,8 @@ function LoginPage({ history }) {
                 return el.profile.email !== res.data.profile.email;
               }).profile.online,
             });
-            socket.emit('connect-chats', res.data._id, res.data.chats);
           }
-          history.push('/home');
-          // saving to gState and redirect to Home and establish connection with socketio
+          history.push("/home");
         }
       } else {
         setValidation(false);

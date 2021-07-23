@@ -125,7 +125,7 @@
   padding-left: 15px;
   font-weight: 600;
 }
-.chat-item-messaage {
+.chat-item-message {
   padding-left: 15px;
   font-weight: 300;
 }
@@ -182,4 +182,10 @@
 
 chatRow:hover {
   background-color: grey;
+}
+.no-message-chat-item {
+  font-style: italic;
+  font-size: 15px;
+  font-weight: 400;
+  color: rgb(116, 111, 111);
 }
