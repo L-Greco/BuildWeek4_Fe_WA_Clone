@@ -66,7 +66,7 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
                   .filter((i) => i.profile.email !== user.profile.email)
                   .map((single) => single.profile.firstName)}
             </div>
-            <div className='chat-item-messaage'>
+            <div className='chat-item-message'>
               {message ? message : "lack of content"}
             </div>
           </Col>

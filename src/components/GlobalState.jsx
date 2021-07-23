@@ -10,6 +10,7 @@ const GlobalState = ({ children }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [chatPartner, setChatPartner] = useState({});
   const [newMessages, setNewMessages] = useState([]);
+  const [socketId, setSocketId] = useState("");
   return (
     <LoginContext.Provider
       value={{
@@ -23,6 +24,8 @@ const GlobalState = ({ children }) => {
         setIsTyping,
         selectedChat,
         setSelectedChat,
+        socketId,
+        setSocketId,
         loggedIn,
         setLoggedIn,
         messages,

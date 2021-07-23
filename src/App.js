@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import LoginPage from './components/LoginPage';
 import { LoginContext } from '../src/components/GlobalState';
 import { getRequest } from './lib/axios';
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useCallback } from 'react';
 import { SocketContext } from './socket';
 
 
@@ -15,8 +15,10 @@ function App() {
     loggedIn,
     setLoggedIn,
     setUser,
+    
     setSelectedChat,
     setChatPartner,
+    
   } = useContext(LoginContext);
   const socket = useContext(SocketContext);
 
@@ -26,8 +28,9 @@ function App() {
       if (data.status === 200) {
         setLoggedIn(true);
         setUser(data.data);
-
-        if (data.data.chats.length > 0 && data.data.chats !== undefined) {
+        socket.emit('connect-chats', data.data._id, data.data.chats);
+        socket.emit("give-me-my-socket-id", data.data._id)
+        if (data.data.chats[0].chat !== null && data.data.chats.length > 0 && data.data.chats !== undefined ) {
           setSelectedChat(data.data.chats[0].chat._id);
           setChatPartner({
             name: data.data.chats[0].chat.participants.find((el) => {
@@ -40,7 +43,7 @@ function App() {
               return el.profile.email !== data.data.profile.email;
             }).profile.online,
           });
-          socket.emit('connect-chats', data.data._id, data.data.chats);
+          
         }
       }
     } catch (error) {
@@ -57,14 +60,6 @@ function App() {
     isLogged();
     // return socket.emit('offline', user._id);
   }, [loggedIn]);
-
-  useEffect(() => {
-    socket.on("connect", () => {
-      console.log(socket.id)
-  })
-  },[])
-
- 
 
   return (
     <Router>

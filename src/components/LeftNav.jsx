@@ -88,6 +88,11 @@ const LeftNav = ({ profile, chats, friends }) => {
       if (request.status === 200) {
         setChat(request.data);
         getChats();
+        socket.emit(
+          "participants-Join-room",
+          request.data._id,
+          request.data.participants
+        );
         setUsers(null);
       }
     } catch (error) {
@@ -159,30 +164,30 @@ const LeftNav = ({ profile, chats, friends }) => {
       <Profile profile={profile} />
 
       {users !== null && query
-        ? users.map((user) => (
+        ? users.map((user, i) => (
             <div
+              key={i}
               onClick={() => {
                 makeChat(user._id);
-                socket.emit(
-                  "participants-Join-room",
-                  chat?._id,
-                  chat?.participants
-                );
               }}>
               <Users key={user._id} user={user} />
             </div>
           ))
         : chats !== undefined && chats?.length > 0
-        ? chats.map((item) => (
-            <ChatItem
-              key={item._id}
-              owner={profile.lastName}
-              participants={item.chat.participants}
-              id={item.chat._id}
-              message={item.chat.latestMessage.text}
-              time={item.chat.latestMessage.date}
-            />
-          ))
+        ? chats.map((item) => {
+            if (item.chat !== null) {
+              return (
+                <ChatItem
+                  key={item._id}
+                  owner={profile.lastName}
+                  participants={item.chat.participants}
+                  id={item.chat._id}
+                  message={item.chat.latestMessage.text}
+                  time={item.chat.latestMessage.date}
+                />
+              );
+            }
+          })
         : null}
     </>
   );

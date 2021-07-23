@@ -12,17 +12,17 @@ function LoginPage({ history }) {
   const [signUp, setSignUp] = useState(false);
   const [validation, setValidation] = useState(true);
   const [Loading, setLoading] = useState(false);
-  const { setUser } = useContext(LoginContext);
-  const { setLoggedIn, setSelectedChat, setChatPartner } =
+
+  const { setLoggedIn, setSelectedChat, setChatPartner, setUser } =
     useContext(LoginContext);
 
   const hideModal = () => {
     setSignUp(false);
   };
-  const email = useRef(null);
+  const email = useRef(undefined);
   // .current points to the html Object atm
   // so value === current.value
-  const password = useRef(null);
+  const password = useRef(undefined);
 
   const base64 = (input) => {
     return new Buffer(input).toString("base64");
@@ -44,10 +44,13 @@ function LoginPage({ history }) {
         if (res.status === 200) {
           setValidation(true);
           setUser(res.data);
-
           setLoggedIn(true);
           setLoading(false);
-          if (res.data.chats.length > 0 && res.data.chats !== undefined) {
+          if (
+            res.data.chats[0].chat !== null &&
+            res.data.chats.length > 0 &&
+            res.data.chats !== undefined
+          ) {
             setSelectedChat(res.data.chats[0].chat._id);
             setChatPartner({
               name: res.data.chats[0].chat.participants.find((el) => {

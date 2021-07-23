@@ -21,13 +21,12 @@ const Profile = ({ profile }) => {
       const res = await getRequest("users/logout");
       if (res.status === 200) {
         socket.emit("offline", user._id);
-        setLoggedIn(false);
         setUser({});
+        setLoggedIn(false);
       }
     } catch (error) {
       console.log(error);
       if (error.response?.status === 401) {
-        // socket.emit("offline", user._id);
         setLoggedIn(false);
       } else {
         setLoggedIn(true);

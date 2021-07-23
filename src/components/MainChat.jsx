@@ -35,6 +35,8 @@ const MainChat = () => {
     setChatPartner,
     setNewMessages,
     setLoggedIn,
+    setSocketId,
+    setUser,
   } = useContext(LoginContext);
   const socket = useContext(SocketContext);
 
@@ -58,11 +60,34 @@ const MainChat = () => {
     }
   }, [selectedChat, setLoggedIn, setMessages]);
 
+  const getChats = async () => {
+    try {
+      const request = await getRequest("chat/me");
+      if (request.status === 200) {
+        const chats = request.data.map((ch) => {
+          return { hidden: false, chat: ch };
+        });
+        setUser((u) => {
+          return { ...u, chats: chats };
+        });
+      }
+    } catch (error) {
+      console.log();
+      if (error.response?.status === 401) {
+        // socket.emit("offline", user._id);
+        setLoggedIn(false);
+      } else {
+        setLoggedIn(true);
+      }
+    }
+  };
+
   const messageToSend = {
     text: newMessage,
     chatId: selectedChat,
     userId: user._id,
     date: new Date().toISOString(),
+    status: "waiting",
   };
 
   const handleSubmit = () => {
@@ -75,17 +100,21 @@ const MainChat = () => {
 
   useEffect(() => {
     getChatDetails();
-  }, [selectedChat, getChatDetails]);
+  }, [selectedChat]);
 
   const handleReceivedMessage = useCallback(
     (message) => {
+      console.log("handleReceivedMessage");
       if (message.chatId !== selectedChat) {
         setNewMessages((m) => {
           return [...m, message.chatId];
         });
+        gotoBottom(".main-chat-view");
+      } else {
+        setMessages((h) => [...h, message]);
       }
     },
-    [selectedChat, setNewMessages]
+    [selectedChat]
   );
 
   const handleIsTyping = useCallback(
@@ -94,11 +123,24 @@ const MainChat = () => {
         setIsTyping(true);
       }
     },
-    [selectedChat, setIsTyping]
+    [selectedChat]
   );
-  const handleMessageDelivered = useCallback((check) => {
-    setDelivered(true);
-  }, []);
+  const handleMessageDelivered = useCallback(
+    (date, chatId) => {
+      if (chatId === selectedChat) {
+        console.log("handleReceivedMessage");
+        setMessages((h) =>
+          h.map((message) => {
+            if (message.date === date) {
+              message = { ...message, status: "received" };
+            }
+            return message;
+          })
+        );
+      }
+    },
+    [selectedChat]
+  );
   const handledStopTyping = useCallback(
     (chatId) => {
       if (chatId === selectedChat) {
@@ -115,7 +157,7 @@ const MainChat = () => {
         });
       }
     },
-    [selectedChat, setChatPartner]
+    [selectedChat]
   );
 
   const handleLogin = useCallback(
@@ -126,8 +168,30 @@ const MainChat = () => {
         });
       }
     },
-    [selectedChat, setChatPartner]
+    [selectedChat]
   );
+  const handleNewChat = useCallback(
+    (chatId) => {
+      console.log("chat Updated");
+      getChats();
+    },
+    [selectedChat]
+  );
+
+  const handleDeleteMessage = useCallback(
+    (msgId, chatId) => {
+      if (chatId === selectedChat) {
+        setMessages((h) => h.filter((msg) => msg._id !== msgId));
+      }
+    },
+    [selectedChat]
+  );
+  const handleConnect = useCallback(() => {
+    console.log("socketId", socket.id);
+    setUser((u) => {
+      return { ...u, profile: { ...u.profile, socketId: socket.id } };
+    });
+  }, []);
 
   useEffect(() => {
     socket.on("receive-message", handleReceivedMessage);
@@ -136,9 +200,14 @@ const MainChat = () => {
     socket.on("stopped-typing", handledStopTyping);
     socket.on("logged-out", handleLogout);
     socket.on("logged-in", handleLogin);
+    socket.on("delete-message", handleDeleteMessage);
   }, [selectedChat]);
-
   // Emoji Logic from here
+
+  useEffect(() => {
+    socket.on("connect", handleConnect);
+    socket.on("new-chat", handleNewChat);
+  });
 
   // Setting Emoji to messsage
   const onEmojiClick = (event, emojiObject) => {
@@ -253,15 +322,21 @@ const MainChat = () => {
             messages.map((message) => {
               return (
                 <MessageBox
+                  key={message._id}
                   id={message._id}
                   position={user._id === message.userId ? "right" : "left"}
                   type={message.type}
                   text={message.text}
                   removeButton={true}
-                  onRemoveMessageClick={() => console.log("remove")}
+                  onRemoveMessageClick={() => {
+                    console.log("delete");
+                    socket.emit("delete-message", message._id, message.chatId);
+                  }}
                   onContextMenu={() => console.log("context")}
                   date={message.date ? parseISO(message.date) : "nothing"}
-                  status={delivered ? "received" : "waiting"}
+                  status={
+                    message.status === "received" ? "received" : "waiting"
+                  }
                 />
               );
             })}
