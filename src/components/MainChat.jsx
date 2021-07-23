@@ -195,6 +195,7 @@ const MainChat = ({ history }) => {
 
   const handleDeleteMessage = useCallback(
     (msgId, chatId) => {
+      console.log("delete");
       if (chatId === selectedChat) {
         setMessages((h) => h.filter((msg) => msg._id !== msgId));
       }
@@ -304,7 +305,7 @@ const MainChat = ({ history }) => {
         METHOD: "PUT",
         headers: { "Content-Type": "multipart/form-data" },
         body: image[0],
-        withCredentials: true,
+        credentials: "include",
       });
 
       if (res.ok) {
