@@ -37,6 +37,7 @@ const MainChat = ({ history }) => {
     loggedIn,
     setLoggedIn,
   } = useContext(LoginContext);
+
   const toggleFriend = () => {
     const mainComp = document.getElementById('friend');
     mainComp.style.width = '33%';

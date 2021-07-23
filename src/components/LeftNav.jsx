@@ -1,7 +1,7 @@
 import './styles/LeftNav.css';
 import { Col, FormControl, Form, Modal, Button } from 'react-bootstrap';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { BiMessageDetail, BiLoaderCircle } from 'react-icons/bi';
 import Contacts from './Contacts.jsx';
@@ -12,6 +12,7 @@ import { socket } from '../App';
 import { getRequest, postRequest } from '../lib/axios';
 import { LoginContext } from './GlobalState';
 import { withRouter } from 'react-router-dom';
+import Friend from './Friend.jsx';
 
 const LeftNav = ({ profile, chats, friends, history }) => {
   const toggleContacts = () => {
@@ -145,6 +146,7 @@ const LeftNav = ({ profile, chats, friends, history }) => {
       </Col>
       <Contacts friends={friends} />
       <Profile profile={profile} />
+      <Friend />
 
       {users !== null && query
         ? users.map((user) => (

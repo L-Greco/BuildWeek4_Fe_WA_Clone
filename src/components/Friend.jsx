@@ -6,7 +6,7 @@ import { LoginContext } from './GlobalState';
 
 import { Row, Col } from 'react-bootstrap';
 
-const Friend = ({ profile }) => {
+const Friend = () => {
   const untoggleFriend = () => {
     const mainComp = document.getElementById('friend');
     mainComp.style.width = '0px';
