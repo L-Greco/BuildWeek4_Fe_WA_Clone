@@ -4,7 +4,7 @@
 
   flex-direction: column;
   background-image: url(https://theabbie.github.io/blog/assets/official-whatsapp-background-image.jpg);
-  overflow-y: scroll;
+  overflow: auto;
 }
 .main-chat-view .rce-mlist {
   display: flex;

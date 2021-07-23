@@ -48,10 +48,10 @@ const MainChat = ({ history }) => {
           setMessages(res.data.history);
           gotoBottom(".main-chat-view");
         }
-        if (res.status === 401) {
+      } catch (error) {
+        if (error.response.status === 401) {
           history.push("/");
         }
-      } catch (error) {
         setLoading(false);
         console.log(error);
       }
