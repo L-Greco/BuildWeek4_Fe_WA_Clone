@@ -16,6 +16,15 @@
 .main-chat-view .rce-container-mlist {
   flex-grow: 1;
 }
+
+.background-message .rce-mbox::before {
+  content: "";
+  color: red;
+  background-color: #ffba10;
+  position: absolute;
+  z-index: 1050;
+  left: 0;
+}
 ::-webkit-scrollbar {
   width: 0; /* Remove scrollbar space */
   background: transparent; /* Optional: just make scrollbar invisible */
