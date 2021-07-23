@@ -279,15 +279,12 @@ const MainChat = ({ history }) => {
         20, // quality
         0, // rotation
         (uri) => {
-          var formdata = new FormData();
-          formdata.append("img", uri);
-          setImage(formdata);
           // You upload logic goes here
-          // console.log(uri);
-          upLoadImage();
-          messageToSend = { ...messageToSend, type: "photo", image: uri };
-          setMessages((h) => [...h, messageToSend]);
-          // handleSubmit();
+
+          setImage(uri);
+          upLoadImage(file);
+          // messageToSend = { ...messageToSend, type: "photo", image: uri };
+          // setMessages((h) => [...h, messageToSend]);
         },
         "base64" // blob or base64 default base64
       );
@@ -296,23 +293,22 @@ const MainChat = ({ history }) => {
     }
   };
 
-  const upLoadImage = async () => {
+  const upLoadImage = async (file) => {
+    console.log(file);
     setLoading(true);
-
+    var formdata = new FormData();
+    formdata.append("img", file);
     try {
-      const res = await fetch(process.env.REACT_APP_BE_URL + "/chat/upload", {
-        METHOD: "PUT",
-        headers: { "Content-Type": "multipart/form-data" },
-        body: image[0],
-        withCredentials: true,
-      });
+      const res = await putRequest("chat/upload", formdata);
+      if (res.status === 200) {
+        setLoading(false);
 
-      if (res.ok) {
-        setLoading(false);
-        console.log(res);
-      } else {
-        console.log(res);
-        setLoading(false);
+        messageToSend = {
+          ...messageToSend,
+          type: "photo",
+          image: res.data.image,
+        };
+        handleSubmit();
       }
     } catch (error) {
       setLoading(false);
@@ -324,19 +320,20 @@ const MainChat = ({ history }) => {
   return (
     <>
       <Col md={12}>
-        <div className='chat-header d-flex flex-row'>
-          <div className='d-flex justify-content-center align-items-center'>
+        <div className="chat-header d-flex flex-row">
+          <div className="d-flex justify-content-center align-items-center">
             <img
               src={chatPartner.avatar}
-              alt='avatar'
-              className='avatar-img-style'
+              alt="avatar"
+              className="avatar-img-style"
               onClick={() => toggleFriend()}
             />
             <div
-              className='d-flex flex-column ms-2'
-              style={{ marginTop: "10px" }}>
+              className="d-flex flex-column ms-2"
+              style={{ marginTop: "10px" }}
+            >
               <span>{chatPartner.name}</span>
-              <span className='under-chat-partner'>
+              <span className="under-chat-partner">
                 {isTyping
                   ? "...is typing"
                   : chatPartner.online
@@ -348,14 +345,14 @@ const MainChat = ({ history }) => {
             </div>
           </div>
         </div>
-        <div className='main-chat-view'>
+        <div className="main-chat-view">
           {loading && (
             <Spinner
-              as='span'
-              animation='border'
-              size='lg'
-              role='status'
-              aria-hidden='true'
+              as="span"
+              animation="border"
+              size="lg"
+              role="status"
+              aria-hidden="true"
               // className="mx-auto"
               // variant="success"
               style={{
@@ -387,7 +384,7 @@ const MainChat = ({ history }) => {
                 <MessageBox
                   position={user._id === message.userId ? "right" : "left"}
                   date={message.date ? parseISO(message.date) : "nothing"}
-                  type='photo'
+                  type="photo"
                   removeButton={true}
                   onRemoveMessageClick={() => {
                     console.log("delete");
@@ -420,21 +417,21 @@ const MainChat = ({ history }) => {
               />
             </div>
           )}
-          <div className='searching-div-main-chat'>
+          <div className="searching-div-main-chat">
             <FiPaperclip
               onClick={() => imageInput()}
-              className='mx-1 paperClip'
+              className="mx-1 paperClip"
             />
             <div ref={grEmoji}>
-              <GrEmoji onClick={() => toggleEmoji()} className='emoji mx-1' />
+              <GrEmoji onClick={() => toggleEmoji()} className="emoji mx-1" />
             </div>
 
             <FormControl
-              type='text'
-              placeholder='Type your message...'
+              type="text"
+              placeholder="Type your message..."
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              className='message-input-main-chat'
+              className="message-input-main-chat"
               onKeyDown={(e) => {
                 socket.emit("im-typing", selectedChat);
                 if (e.key === "Enter") {
@@ -446,14 +443,14 @@ const MainChat = ({ history }) => {
               }}
             />
             <span>
-              <BsFillMicFill className='voice-message-icon' />
+              <BsFillMicFill className="voice-message-icon" />
             </span>
           </div>
         </div>
       </Col>
       <input
         style={{ display: "none" }}
-        id='imageInput'
+        id="imageInput"
         type={"file"}
         onChange={() => imageToUri()}
       />
