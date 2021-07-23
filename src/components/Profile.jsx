@@ -45,7 +45,7 @@ const Profile = ({ profile }) => {
         <Row>
           <Col md={12}>
             <div className="profile-div-text">
-              {profile && profile.lastName}
+              {profile && profile.firstName} {profile && profile.lastName}
             </div>
           </Col>
         </Row>

@@ -1,9 +1,9 @@
-import "./styles/LeftNav.css";
-import { Row, Col } from "react-bootstrap";
-import parseISO from "date-fns/parseISO";
-import { useContext, useEffect, useState } from "react";
-import { LoginContext } from "./GlobalState";
-import { format } from "date-fns";
+import './styles/LeftNav.css';
+import { Row, Col } from 'react-bootstrap';
+import parseISO from 'date-fns/parseISO';
+import { useContext, useEffect, useState } from 'react';
+import { LoginContext } from './GlobalState';
+import { format } from 'date-fns';
 
 const ChatItem = ({ id, participants, message, time, owner }) => {
   const {
@@ -31,12 +31,10 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
   return (
     <>
       <div
-        className={`${
-          selectedChat === id ? "chat-list-selected-item" : "chat-list-item"
-        }`}
-        // style={{
-        //   backgroundColor: `${selectedChat === id ? "#EBEBEB" : "#fff"}`,
-        // }}
+        className="chat-list-item"
+        style={{
+          backgroundColor: `${selectedChat === id ? '#EBEBEB' : '#fff'}`,
+        }}
         onClick={() => {
           setChatPartner({
             name: participants.find((el) => {
@@ -56,13 +54,16 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
           <Col sm={2}>
             <span>
               <img
-                src={participants[0].profile.avatar}
+                src={
+                  participants.filter((el) => el.profile.socketId !== owner)[0]
+                    .profile.avatar
+                }
                 alt="avatar"
                 className="list-avatar-wrapper"
-              />{" "}
+              />{' '}
             </span>
           </Col>
-          <Col sm={8}>
+          <Col sm={8} s={4}>
             <div className="chat-item-contact">
               {participants &&
                 participants
@@ -70,21 +71,21 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
                   .map((single) => single.profile.firstName)}
             </div>
             <div className="chat-item-messaage">
-              {message ? message : "lack of content"}
+              {message ? message : 'lack of content'}
             </div>
           </Col>
           <Col sm={2}>
             <div className="chat-item-time">
-              {time ? format(parseISO(time), "hh:mm") : "nothing"}
+              {time ? format(parseISO(time), 'hh:mm') : 'nothing'}
             </div>
             {newMessage && (
               <div
                 className=" text-white d-flex justify-content-center align-items-center"
                 style={{
-                  width: "15px",
-                  height: "16px",
-                  borderRadius: "50%",
-                  backgroundColor: "#06D755",
+                  width: '15px',
+                  height: '16px',
+                  borderRadius: '50%',
+                  backgroundColor: '#06D755',
                 }}
               >
                 <span>1</span>
