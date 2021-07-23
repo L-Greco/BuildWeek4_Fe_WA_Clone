@@ -4,30 +4,18 @@ import { BiDotsVerticalRounded } from "react-icons/bi";
 import { BsGearWideConnected } from "react-icons/bs";
 import LoginForm from "./LoginForm";
 import QRCode from "react-qr-code";
-import { useState, useRef, useContext, useEffect } from "react";
+import { useState, useRef, useContext } from "react";
 import { getRequest } from "../lib/axios";
 import { LoginContext } from "./GlobalState";
-import { io } from "socket.io-client";
-
-const ADDRESS = process.env.REACT_APP_BE_URL;
-export const socket = io(ADDRESS, { transports: ["websocket"] });
 
 function LoginPage({ history }) {
   const [signUp, setSignUp] = useState(false);
   const [validation, setValidation] = useState(true);
   const [Loading, setLoading] = useState(false);
   const { setUser } = useContext(LoginContext);
-  const { loggedIn, setLoggedIn, user, setSelectedChat, setChatPartner } =
+  const { setLoggedIn, setSelectedChat, setChatPartner } =
     useContext(LoginContext);
 
-  useEffect(() => {
-    if (loggedIn) {
-      socket.on("loggedIn", (arg) => {
-        // with on we're listening for an event
-        console.log("we are connected with id: ", socket.id);
-      });
-    }
-  }, [loggedIn]);
   const hideModal = () => {
     setSignUp(false);
   };
@@ -72,10 +60,8 @@ function LoginPage({ history }) {
                 return el.profile.email !== res.data.profile.email;
               }).profile.online,
             });
-            socket.emit("connect-chats", res.data._id, res.data.chats);
           }
           history.push("/home");
-          // saving to gState and redirect to Home and establish connection with socketio
         }
       } else {
         setValidation(false);

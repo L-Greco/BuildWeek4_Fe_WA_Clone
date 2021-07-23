@@ -9,19 +9,21 @@ import { getRequest } from "../lib/axios";
 import { useState } from "react";
 import parseISO from "date-fns/parseISO";
 import Compress from "react-image-file-resizer";
-import { socket } from "../App";
-import { dateDiff, gotoBottom, scrollToTop } from "../lib/helper";
+import { dateDiff, gotoBottom } from "../lib/helper";
 import { GrEmoji } from "react-icons/gr";
 import { FiPaperclip } from "react-icons/fi";
-import { BsFillMicFill } from "react-icons/bs";
+import { BsFillMicFill, BsCheck, BsCheckAll } from "react-icons/bs";
 import Picker from "emoji-picker-react";
 import ChatItem from "./ChatItem";
+import { SocketContext } from "../socket";
+import { useCallback } from "react";
 
 const MainChat = () => {
   const [newMessage, setNewMessage] = useState("");
   const [chosenEmoji, setChosenEmoji] = useState(null);
   const [emojiClicked, setEmojiClicked] = useState(false);
   const [image, setImage] = useState("");
+  const [delivered, setDelivered] = useState(true);
   const {
     selectedChat,
     user,
@@ -32,9 +34,11 @@ const MainChat = () => {
     setIsTyping,
     setChatPartner,
     setNewMessages,
+    setLoggedIn,
   } = useContext(LoginContext);
+  const socket = useContext(SocketContext);
 
-  const getChatDetails = async () => {
+  const getChatDetails = useCallback(async () => {
     if (selectedChat) {
       try {
         const res = await getRequest(`chat/${selectedChat}`);
@@ -44,9 +48,15 @@ const MainChat = () => {
         }
       } catch (error) {
         console.log(error);
+        if (error.response?.status === 401) {
+          // socket.emit("offline", user._id);
+          setLoggedIn(false);
+        } else {
+          setLoggedIn(true);
+        }
       }
     }
-  };
+  }, [selectedChat, setLoggedIn, setMessages]);
 
   const messageToSend = {
     text: newMessage,
@@ -57,6 +67,7 @@ const MainChat = () => {
 
   const handleSubmit = () => {
     socket.emit("send-message", messageToSend, selectedChat);
+    setDelivered(false);
     setMessages((h) => [...h, messageToSend]);
     setNewMessage("");
     gotoBottom(".main-chat-view");
@@ -64,47 +75,68 @@ const MainChat = () => {
 
   useEffect(() => {
     getChatDetails();
-  }, [selectedChat]);
+  }, [selectedChat, getChatDetails]);
 
-  useEffect(() => {
-    socket.on("receive-message", (message) => {
+  const handleReceivedMessage = useCallback(
+    (message) => {
       if (message.chatId !== selectedChat) {
         setNewMessages((m) => {
           return [...m, message.chatId];
         });
-      } else {
-        console.log(message);
-        setMessages((h) => [...h, message]);
       }
-    });
-    socket.on("message-delivered", (check) => {
-      console.log("message-delivered", check);
-    });
-    socket.on("is-typing", (chatId) => {
+    },
+    [selectedChat, setNewMessages]
+  );
+
+  const handleIsTyping = useCallback(
+    (chatId) => {
       if (chatId === selectedChat) {
         setIsTyping(true);
       }
-    });
-    socket.on("stopped-typing", (chatId) => {
+    },
+    [selectedChat, setIsTyping]
+  );
+  const handleMessageDelivered = useCallback((check) => {
+    setDelivered(true);
+  }, []);
+  const handledStopTyping = useCallback(
+    (chatId) => {
       if (chatId === selectedChat) {
         setIsTyping(false);
       }
-    });
-    socket.on("logged-out", (chatId) => {
+    },
+    [selectedChat, setIsTyping]
+  );
+  const handleLogout = useCallback(
+    (chatId) => {
       if (chatId !== selectedChat) {
         setChatPartner((cp) => {
           return { ...cp, online: false, lastSeen: new Date().toISOString() };
         });
       }
-    });
-    socket.on("logged-in", (chatId) => {
+    },
+    [selectedChat, setChatPartner]
+  );
+
+  const handleLogin = useCallback(
+    (chatId) => {
       if (chatId === selectedChat) {
         setChatPartner((cp) => {
           return { ...cp, online: true };
         });
       }
-    });
-  }, []);
+    },
+    [selectedChat, setChatPartner]
+  );
+
+  useEffect(() => {
+    socket.on("receive-message", handleReceivedMessage);
+    socket.on("is-typing", handleIsTyping);
+    socket.on("message-delivered", handleMessageDelivered);
+    socket.on("stopped-typing", handledStopTyping);
+    socket.on("logged-out", handleLogout);
+    socket.on("logged-in", handleLogin);
+  }, [selectedChat]);
 
   // Emoji Logic from here
 
@@ -184,17 +216,16 @@ const MainChat = () => {
   return (
     <>
       <Col md={12}>
-        <div className="chat-header d-flex flex-row">
-          <div className="d-flex justify-content-center align-items-center">
+        <div className='chat-header d-flex flex-row'>
+          <div className='d-flex justify-content-center align-items-center'>
             <img
               src={chatPartner.avatar}
-              alt="avatar"
-              className="avatar-img-style"
+              alt='avatar'
+              className='avatar-img-style'
             />
             <div
-              className="d-flex flex-column ms-2"
-              style={{ marginTop: "10px" }}
-            >
+              className='d-flex flex-column ms-2'
+              style={{ marginTop: "10px" }}>
               <span>{chatPartner.name}</span>
               <span>
                 {isTyping
@@ -206,11 +237,37 @@ const MainChat = () => {
             </div>
           </div>
         </div>
-        <div className="main-chat-view">
+        <div className='main-chat-view'>
           {/* workin MessageList */}
-          <MessageList
-            className="background-message"
-            id="message-list"
+          {/* {messages &&
+              messages
+                .map((message) => {
+                  return {
+                    ...message,
+                    position: user._id === message.userId ? "right" : "left",
+                    date: message.date ? parseISO(message.date) : "nothing",
+                  };
+                })
+                .reverse()} */}
+          {messages &&
+            messages.map((message) => {
+              return (
+                <MessageBox
+                  id={message._id}
+                  position={user._id === message.userId ? "right" : "left"}
+                  type={message.type}
+                  text={message.text}
+                  removeButton={true}
+                  onRemoveMessageClick={() => console.log("remove")}
+                  onContextMenu={() => console.log("context")}
+                  date={message.date ? parseISO(message.date) : "nothing"}
+                  status={delivered ? "received" : "waiting"}
+                />
+              );
+            })}
+          {/* <MessageList
+            className='background-message'
+            id='message-list'
             lockable={true}
             dataSource={
               messages &&
@@ -224,7 +281,7 @@ const MainChat = () => {
                 })
                 .reverse()
             }
-          />
+          /> */}
           {/* Testing MessageList */}
           {/* // {image && (
           //   <MessageBox
@@ -254,21 +311,21 @@ const MainChat = () => {
               />
             </div>
           )}
-          <div className="searching-div-main-chat">
+          <div className='searching-div-main-chat'>
             <FiPaperclip
               onClick={() => imageInput()}
-              className="mx-1 paperClip"
+              className='mx-1 paperClip'
             />
             <div ref={grEmoji}>
-              <GrEmoji onClick={() => toggleEmoji()} className="emoji mx-1" />
+              <GrEmoji onClick={() => toggleEmoji()} className='emoji mx-1' />
             </div>
 
             <FormControl
-              type="text"
-              placeholder="Type your message..."
+              type='text'
+              placeholder='Type your message...'
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              className="message-input-main-chat"
+              className='message-input-main-chat'
               onKeyDown={(e) => {
                 socket.emit("im-typing", selectedChat);
                 if (e.key === "Enter") {
@@ -280,14 +337,14 @@ const MainChat = () => {
               }}
             />
             <span>
-              <BsFillMicFill className="voice-message-icon" />
+              <BsFillMicFill className='voice-message-icon' />
             </span>
           </div>
         </div>
       </Col>
       <input
         style={{ display: "none" }}
-        id="imageInput"
+        id='imageInput'
         type={"file"}
         onChange={() => imageToUri()}
       />

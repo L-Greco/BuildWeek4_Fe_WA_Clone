@@ -1,14 +1,15 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
+import GlobalState from "../src/components/GlobalState"
+import { socket, SocketContext } from './socket';
 import App from './App';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import GlobalState from "../src/components/GlobalState"
-
 ReactDOM.render(
+  <SocketContext.Provider value={socket}>
   <GlobalState>
     <App />
-  </GlobalState>,
+  </GlobalState>
+  </SocketContext.Provider>,
   document.getElementById('root')
 );

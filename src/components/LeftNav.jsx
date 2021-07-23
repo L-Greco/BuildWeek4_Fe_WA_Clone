@@ -1,16 +1,16 @@
 import "./styles/LeftNav.css";
 import { Col, FormControl, Form } from "react-bootstrap";
 import { AiOutlineSearch } from "react-icons/ai";
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { BiMessageDetail, BiLoaderCircle } from "react-icons/bi";
 import Contacts from "./Contacts.jsx";
 import Profile from "./Profile";
 import ChatItem from "./ChatItem";
 import Users from "./Users";
-import { socket } from "../App";
 import { getRequest, postRequest } from "../lib/axios";
 import { LoginContext } from "./GlobalState";
+import { SocketContext } from "../socket";
 
 const LeftNav = ({ profile, chats, friends }) => {
   const toggleContacts = () => {
@@ -26,7 +26,8 @@ const LeftNav = ({ profile, chats, friends }) => {
   const [check, setCheck] = useState(false);
   const [groupName, setGroupName] = useState("Hell Hello");
   const [chat, setChat] = useState(null);
-  const { setUser } = useContext(LoginContext);
+  const { setUser, setLoggedIn } = useContext(LoginContext);
+  const socket = useContext(SocketContext);
 
   const handleSearchInput = (event) => {
     const query = event.target.value;
@@ -46,6 +47,12 @@ const LeftNav = ({ profile, chats, friends }) => {
       }
     } catch (error) {
       console.log();
+      if (error.response?.status === 401) {
+        // socket.emit("offline", user._id);
+        setLoggedIn(false);
+      } else {
+        setLoggedIn(true);
+      }
     }
   };
 
@@ -62,6 +69,12 @@ const LeftNav = ({ profile, chats, friends }) => {
       }
     } catch (error) {
       console.log(error);
+      if (error.response?.status === 401) {
+        // socket.emit("offline", user._id);
+        setLoggedIn(false);
+      } else {
+        setLoggedIn(true);
+      }
     }
   };
 
@@ -79,6 +92,12 @@ const LeftNav = ({ profile, chats, friends }) => {
       }
     } catch (error) {
       console.log(error);
+      if (error.response?.status === 401) {
+        // socket.emit("offline", user._id);
+        setLoggedIn(false);
+      } else {
+        setLoggedIn(true);
+      }
     }
   };
 
