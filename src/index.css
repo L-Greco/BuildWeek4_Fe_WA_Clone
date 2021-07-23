@@ -13,10 +13,10 @@ body {
 }
 .main-div-home {
   position: absolute;
-  top: 15px;
-  bottom: 15px;
-  left: 15px;
-  right: 15px;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
   background-color: #f0f0f0;
   --bs-gutter-x: 0 !important;
 }

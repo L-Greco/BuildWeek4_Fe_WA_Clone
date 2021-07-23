@@ -1,5 +1,5 @@
 .main-chat-view {
-  height: 87vh;
+  /* height: 87vh; */
   display: flex;
 
   flex-direction: column;
@@ -132,4 +132,10 @@
   height: 40px;
   width: 40px;
   border-radius: 30px;
+}
+.under-chat-partner {
+  font-style: italic;
+  font-size: 15px;
+  font-weight: 400;
+  color: rgb(116, 111, 111);
 }

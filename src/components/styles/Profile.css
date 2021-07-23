@@ -102,3 +102,17 @@
   font-size: 1.1rem;
   padding: 0.5rem 1.2rem 0.5rem 1.2rem;
 } */
+@media (max-width: 575px) {
+  .profile-left-nav {
+    background-color: #ededed;
+    height: 98vh;
+
+    position: absolute;
+    top: 0px;
+    z-index: 1;
+    /* bottom: -15px; */
+    overflow: hidden;
+
+    transition: 0.2s linear;
+  }
+}
