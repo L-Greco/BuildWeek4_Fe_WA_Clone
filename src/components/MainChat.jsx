@@ -1,29 +1,29 @@
-import { Col, Spinner } from 'react-bootstrap';
-import './styles/MainChat.css';
-import { FormControl } from 'react-bootstrap';
-import 'react-chat-elements/dist/main.css';
-import { MessageList, MessageBox } from 'react-chat-elements';
-import { LoginContext } from './GlobalState';
-import { useContext, useEffect, useRef } from 'react';
-import { getRequest, putRequest } from '../lib/axios';
-import { useState } from 'react';
-import parseISO from 'date-fns/parseISO';
-import Compress from 'react-image-file-resizer';
-import { dateDiff, gotoBottom } from '../lib/helper';
-import { GrEmoji } from 'react-icons/gr';
-import { FiPaperclip } from 'react-icons/fi';
-import { BsFillMicFill, BsCheck, BsCheckAll } from 'react-icons/bs';
-import Picker from 'emoji-picker-react';
-import { withRouter } from 'react-router-dom';
-import ChatItem from './ChatItem';
-import { SocketContext } from '../socket';
-import { useCallback } from 'react';
+import { Col, Spinner } from "react-bootstrap";
+import "./styles/MainChat.css";
+import { FormControl } from "react-bootstrap";
+import "react-chat-elements/dist/main.css";
+import { MessageList, MessageBox } from "react-chat-elements";
+import { LoginContext } from "./GlobalState";
+import { useContext, useEffect, useRef } from "react";
+import { getRequest, putRequest } from "../lib/axios";
+import { useState } from "react";
+import parseISO from "date-fns/parseISO";
+import Compress from "react-image-file-resizer";
+import { dateDiff, gotoBottom } from "../lib/helper";
+import { GrEmoji } from "react-icons/gr";
+import { FiPaperclip } from "react-icons/fi";
+import { BsFillMicFill, BsCheck, BsCheckAll } from "react-icons/bs";
+import Picker from "emoji-picker-react";
+import { withRouter } from "react-router-dom";
+import ChatItem from "./ChatItem";
+import { SocketContext } from "../socket";
+import { useCallback } from "react";
 
 const MainChat = ({ history }) => {
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
   const [chosenEmoji, setChosenEmoji] = useState(null);
   const [emojiClicked, setEmojiClicked] = useState(false);
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState("");
   const pickerRef = useRef(null);
   const grEmoji = useRef(null);
   const [delivered, setDelivered] = useState(true);
@@ -45,8 +45,8 @@ const MainChat = ({ history }) => {
   const socket = useContext(SocketContext);
 
   const toggleFriend = () => {
-    const mainComp = document.getElementById('friend');
-    mainComp.style.width = '33%';
+    const mainComp = document.getElementById("friend");
+    mainComp.style.width = "33%";
   };
 
   const getChatDetails = useCallback(async () => {
@@ -57,11 +57,11 @@ const MainChat = ({ history }) => {
         if (res.status === 200) {
           setLoading(false);
           setMessages(res.data.history);
-          gotoBottom('.main-chat-view');
+          gotoBottom(".main-chat-view");
         }
       } catch (error) {
         if (error.response.status === 401) {
-          history.push('/');
+          history.push("/");
         }
         setLoading(false);
         console.log(error);
@@ -77,7 +77,7 @@ const MainChat = ({ history }) => {
 
   const getChats = async () => {
     try {
-      const request = await getRequest('chat/me');
+      const request = await getRequest("chat/me");
       if (request.status === 200) {
         const chats = request.data.map((ch) => {
           return { hidden: false, chat: ch };
@@ -102,16 +102,16 @@ const MainChat = ({ history }) => {
     chatId: selectedChat,
     userId: user._id,
     date: new Date().toISOString(),
-    status: 'waiting',
-    type: 'text',
+    status: "waiting",
+    type: "text",
   };
 
   const handleSubmit = () => {
-    socket.emit('send-message', messageToSend, selectedChat);
+    socket.emit("send-message", messageToSend, selectedChat);
     setDelivered(false);
     setMessages((h) => [...h, messageToSend]);
-    setNewMessage('');
-    gotoBottom('.main-chat-view');
+    setNewMessage("");
+    gotoBottom(".main-chat-view");
   };
 
   useEffect(() => {
@@ -120,12 +120,12 @@ const MainChat = ({ history }) => {
 
   const handleReceivedMessage = useCallback(
     (message) => {
-      console.log('handleReceivedMessage');
+      console.log("handleReceivedMessage");
       if (message.chatId !== selectedChat) {
         setNewMessages((m) => {
           return [...m, message.chatId];
         });
-        gotoBottom('.main-chat-view');
+        gotoBottom(".main-chat-view");
       } else {
         setMessages((h) => [...h, message]);
       }
@@ -144,11 +144,11 @@ const MainChat = ({ history }) => {
   const handleMessageDelivered = useCallback(
     (date, chatId) => {
       if (chatId === selectedChat) {
-        console.log('handleReceivedMessage');
+        console.log("handleReceivedMessage");
         setMessages((h) =>
           h.map((message) => {
             if (message.date === date) {
-              message = { ...message, status: 'received' };
+              message = { ...message, status: "received" };
             }
             return message;
           })
@@ -188,7 +188,7 @@ const MainChat = ({ history }) => {
   );
   const handleNewChat = useCallback(
     (chatId) => {
-      console.log('chat Updated');
+      console.log("chat Updated");
       getChats();
     },
     [selectedChat]
@@ -203,26 +203,26 @@ const MainChat = ({ history }) => {
     [selectedChat]
   );
   const handleConnect = useCallback(() => {
-    console.log('socketId', socket.id);
+    console.log("socketId", socket.id);
     setUser((u) => {
       return { ...u, profile: { ...u.profile, socketId: socket.id } };
     });
   }, []);
 
   useEffect(() => {
-    socket.on('receive-message', handleReceivedMessage);
-    socket.on('is-typing', handleIsTyping);
-    socket.on('message-delivered', handleMessageDelivered);
-    socket.on('stopped-typing', handledStopTyping);
-    socket.on('logged-out', handleLogout);
-    socket.on('logged-in', handleLogin);
-    socket.on('delete-message', handleDeleteMessage);
+    socket.on("receive-message", handleReceivedMessage);
+    socket.on("is-typing", handleIsTyping);
+    socket.on("message-delivered", handleMessageDelivered);
+    socket.on("stopped-typing", handledStopTyping);
+    socket.on("logged-out", handleLogout);
+    socket.on("logged-in", handleLogin);
+    socket.on("delete-message", handleDeleteMessage);
   }, [selectedChat]);
   // Emoji Logic from here
 
   useEffect(() => {
-    socket.on('connect', handleConnect);
-    socket.on('new-chat', handleNewChat);
+    socket.on("connect", handleConnect);
+    socket.on("new-chat", handleNewChat);
   });
 
   // Setting Emoji to messsage
@@ -251,10 +251,10 @@ const MainChat = ({ history }) => {
       }
 
       // Bind the event listener
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
       return () => {
         // Unbind the event listener on clean up
-        document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener("mousedown", handleClickOutside);
       };
     }, [ref]);
   }
@@ -263,15 +263,15 @@ const MainChat = ({ history }) => {
   // image Input Logic
 
   const imageInput = () => {
-    let input = document.getElementById('imageInput');
+    let input = document.getElementById("imageInput");
     input.click();
   };
   // image to uri
   const imageToUri = async () => {
-    let input = document.getElementById('imageInput');
+    let input = document.getElementById("imageInput");
     if (input.files[0]) {
       const file = input.files[0];
-      const type = file.type.replace('image/', '');
+      const type = file.type.replace("image/", "");
       Compress.imageFileResizer(
         file, // the file from input
         300, // width
@@ -280,40 +280,36 @@ const MainChat = ({ history }) => {
         20, // quality
         0, // rotation
         (uri) => {
-          var formdata = new FormData();
-          formdata.append('img', uri);
-          setImage(formdata);
           // You upload logic goes here
-          // console.log(uri);
-          upLoadImage();
-          messageToSend = { ...messageToSend, type: 'photo', image: uri };
-          setMessages((h) => [...h, messageToSend]);
-          // handleSubmit();
+
+          setImage(uri);
+          upLoadImage(file);
+          // messageToSend = { ...messageToSend, type: "photo", image: uri };
+          // setMessages((h) => [...h, messageToSend]);
         },
-        'base64' // blob or base64 default base64
+        "base64" // blob or base64 default base64
       );
 
       // setImage(dataUrl);
     }
   };
 
-  const upLoadImage = async () => {
+  const upLoadImage = async (file) => {
+    console.log(file);
     setLoading(true);
-
+    var formdata = new FormData();
+    formdata.append("img", file);
     try {
-      const res = await fetch(process.env.REACT_APP_BE_URL + '/chat/upload', {
-        METHOD: 'PUT',
-        headers: { 'Content-Type': 'multipart/form-data' },
-        body: image[0],
-        withCredentials: true,
-      });
+      const res = await putRequest("chat/upload", formdata);
+      if (res.status === 200) {
+        setLoading(false);
 
-      if (res.ok) {
-        setLoading(false);
-        console.log(res);
-      } else {
-        console.log(res);
-        setLoading(false);
+        messageToSend = {
+          ...messageToSend,
+          type: "photo",
+          image: res.data.image,
+        };
+        handleSubmit();
       }
     } catch (error) {
       setLoading(false);
@@ -331,7 +327,7 @@ const MainChat = ({ history }) => {
               src={
                 chatPartner && chatPartner.avatar
                   ? chatPartner.avatar
-                  : 'https://image.flaticon.com/icons/png/512/4333/4333609.png'
+                  : "https://image.flaticon.com/icons/png/512/4333/4333609.png"
               }
               alt="avatar"
               className="avatar-img-style"
@@ -339,17 +335,17 @@ const MainChat = ({ history }) => {
             />
             <div
               className="d-flex flex-column ms-2"
-              style={{ marginTop: '10px' }}
+              style={{ marginTop: "10px" }}
             >
               <span>{chatPartner.name}</span>
               <span className="under-chat-partner">
                 {isTyping
-                  ? '...is typing'
+                  ? "...is typing"
                   : chatPartner.online
-                  ? 'online'
-                  : chatPartner.lastSeen === 'number'
-                  ? 'last seen ' + dateDiff(chatPartner.lastSeen, Date.now())
-                  : 'last seen 01.01.01'}
+                  ? "online"
+                  : chatPartner.lastSeen === "number"
+                  ? "last seen " + dateDiff(chatPartner.lastSeen, Date.now())
+                  : "last seen 01.01.01"}
               </span>
             </div>
           </div>
@@ -365,39 +361,39 @@ const MainChat = ({ history }) => {
               // className="mx-auto"
               // variant="success"
               style={{
-                position: 'absolute',
-                top: '10%',
-                left: '66%',
-                color: 'rgb(30,190,165)',
+                position: "absolute",
+                top: "10%",
+                left: "66%",
+                color: "rgb(30,190,165)",
               }}
             />
           )}
           {messages &&
             messages.map((message) =>
-              message.type === 'text' ? (
+              message.type === "text" ? (
                 <MessageBox
-                  position={user._id === message.userId ? 'right' : 'left'}
-                  date={message.date ? parseISO(message.date) : 'nothing'}
+                  position={user._id === message.userId ? "right" : "left"}
+                  date={message.date ? parseISO(message.date) : "nothing"}
                   text={message.text}
                   type={message.type}
                   removeButton={true}
                   onRemoveMessageClick={() => {
-                    console.log('delete');
-                    socket.emit('delete-message', message._id, message.chatId);
+                    console.log("delete");
+                    socket.emit("delete-message", message._id, message.chatId);
                   }}
                   status={
-                    message.status === 'received' ? 'received' : 'waiting'
+                    message.status === "received" ? "received" : "waiting"
                   }
                 />
               ) : (
                 <MessageBox
-                  position={user._id === message.userId ? 'right' : 'left'}
-                  date={message.date ? parseISO(message.date) : 'nothing'}
+                  position={user._id === message.userId ? "right" : "left"}
+                  date={message.date ? parseISO(message.date) : "nothing"}
                   type="photo"
                   removeButton={true}
                   onRemoveMessageClick={() => {
-                    console.log('delete');
-                    socket.emit('delete-message', message._id, message.chatId);
+                    console.log("delete");
+                    socket.emit("delete-message", message._id, message.chatId);
                   }}
                   data={{
                     uri: message.image,
@@ -406,9 +402,9 @@ const MainChat = ({ history }) => {
                       loading: 0,
                     },
                   }}
-                  text={message.text ? message.text : ''}
+                  text={message.text ? message.text : ""}
                   status={
-                    message.status === 'received' ? 'received' : 'waiting'
+                    message.status === "received" ? "received" : "waiting"
                   }
                 />
               )
@@ -417,10 +413,10 @@ const MainChat = ({ history }) => {
             <div ref={pickerRef}>
               <Picker
                 pickerStyle={{
-                  width: '30%',
-                  height: '30%',
-                  position: 'fixed',
-                  bottom: '5rem',
+                  width: "30%",
+                  height: "30%",
+                  position: "fixed",
+                  bottom: "5rem",
                 }}
                 onEmojiClick={onEmojiClick}
               />
@@ -442,13 +438,13 @@ const MainChat = ({ history }) => {
               onChange={(e) => setNewMessage(e.target.value)}
               className="message-input-main-chat"
               onKeyDown={(e) => {
-                socket.emit('im-typing', selectedChat);
-                if (e.key === 'Enter') {
+                socket.emit("im-typing", selectedChat);
+                if (e.key === "Enter") {
                   handleSubmit();
                 }
               }}
               onKeyUp={(e) => {
-                socket.emit('i-stopped-typing', selectedChat);
+                socket.emit("i-stopped-typing", selectedChat);
               }}
             />
             <span>
@@ -458,9 +454,9 @@ const MainChat = ({ history }) => {
         </div>
       </Col>
       <input
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
         id="imageInput"
-        type={'file'}
+        type={"file"}
         onChange={() => imageToUri()}
       />
     </>
