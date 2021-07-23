@@ -5,7 +5,8 @@ import { useContext, useEffect, useState } from 'react';
 import { LoginContext } from './GlobalState';
 import { format } from 'date-fns';
 
-const ChatItem = ({ id, participants, message, time, owner }) => {
+const ChatItem = ({ id, participants, message, time, owner, chatName }) => {
+  console.log(chatName);
   const {
     setSelectedChat,
     setChatPartner,
@@ -64,12 +65,16 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
             </span>
           </Col>
           <Col sm={8} s={4}>
-            <div className="chat-item-contact">
-              {participants &&
-                participants
-                  .filter((i) => i.profile.email !== user.profile.email)
-                  .map((single) => single.profile.firstName)}
-            </div>
+            {chatName ? (
+              chatName
+            ) : (
+              <div className="chat-item-contact">
+                {participants &&
+                  participants
+                    .filter((i) => i.profile.email !== user.profile.email)
+                    .map((single) => single.profile.firstName)}
+              </div>
+            )}
             <div className="chat-item-message">
               <span className={message ? '' : 'no-message-chat-item'}>
                 {' '}
