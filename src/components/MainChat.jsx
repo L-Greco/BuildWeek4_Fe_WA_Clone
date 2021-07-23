@@ -266,26 +266,6 @@ const MainChat = ({ history }) => {
     let input = document.getElementById('imageInput');
     input.click();
   };
-  const upLoadImage = async () => {
-    setLoading(true);
-    var formdata = new FormData();
-    formdata.append('img', image);
-
-    try {
-      const res = await putRequest('chat/upload', formdata);
-      if (res.status === 200) {
-        setLoading(false);
-        console.log(res);
-      } else {
-        console.log(res);
-        setLoading(false);
-      }
-    } catch (error) {
-      setLoading(false);
-      alert(error);
-      console.log(error);
-    }
-  };
   // image to uri
   const imageToUri = async () => {
     let input = document.getElementById('imageInput');
@@ -300,7 +280,9 @@ const MainChat = ({ history }) => {
         20, // quality
         0, // rotation
         (uri) => {
-          setImage(uri);
+          var formdata = new FormData();
+          formdata.append('img', uri);
+          setImage(formdata);
           // You upload logic goes here
           // console.log(uri);
           upLoadImage();
@@ -312,6 +294,31 @@ const MainChat = ({ history }) => {
       );
 
       // setImage(dataUrl);
+    }
+  };
+
+  const upLoadImage = async () => {
+    setLoading(true);
+
+    try {
+      const res = await fetch(process.env.REACT_APP_BE_URL + '/chat/upload', {
+        METHOD: 'PUT',
+        headers: { 'Content-Type': 'multipart/form-data' },
+        body: image[0],
+        withCredentials: true,
+      });
+
+      if (res.ok) {
+        setLoading(false);
+        console.log(res);
+      } else {
+        console.log(res);
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      alert(error);
+      console.log(error);
     }
   };
 
@@ -396,7 +403,7 @@ const MainChat = ({ history }) => {
                     uri: message.image,
                     status: {
                       click: true,
-                      loading: 1,
+                      loading: 0,
                     },
                   }}
                   text={message.text ? message.text : ''}
