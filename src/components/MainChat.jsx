@@ -302,7 +302,7 @@ const MainChat = ({ history }) => {
 
     try {
       const res = await fetch(process.env.REACT_APP_BE_URL + "/chat/upload", {
-        METHOD: "PUT",
+        method: "PUT",
         headers: { "Content-Type": "multipart/form-data" },
         body: image[0],
         credentials: "include",
