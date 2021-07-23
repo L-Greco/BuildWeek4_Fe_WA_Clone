@@ -1,7 +1,7 @@
 import "./styles/LeftNav.css";
 import {Col, FormControl, Form, Modal, Button} from "react-bootstrap";
 import {AiOutlineSearch} from "react-icons/ai";
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext} from "react";
 import {BsThreeDotsVertical} from "react-icons/bs";
 import {BiMessageDetail, BiLoaderCircle} from "react-icons/bi";
 import Contacts from "./Contacts.jsx";
