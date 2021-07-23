@@ -54,7 +54,10 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
           <Col sm={2}>
             <span>
               <img
-                src={participants[0].profile.avatar}
+                src={
+                  participants.filter((el) => el.profile.socketId !== owner)[0]
+                    .profile.avatar
+                }
                 alt="avatar"
                 className="list-avatar-wrapper"
               />{' '}

@@ -14,13 +14,8 @@ const ADDRESS = process.env.REACT_APP_BE_URL;
 export const socket = io(ADDRESS, { transports: ['websocket'] });
 
 function App() {
-  const {
-    loggedIn,
-    setLoggedIn,
-    setUser,
-    setSelectedChat,
-    setChatPartner,
-  } = useContext(LoginContext);
+  const { loggedIn, setLoggedIn, setUser, setSelectedChat, setChatPartner } =
+    useContext(LoginContext);
 
   const isLogged = async () => {
     try {

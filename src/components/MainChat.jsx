@@ -16,7 +16,6 @@ import { FiPaperclip } from 'react-icons/fi';
 import { BsFillMicFill } from 'react-icons/bs';
 import Picker from 'emoji-picker-react';
 import { withRouter } from 'react-router-dom';
-import ChatItem from './ChatItem';
 
 const MainChat = ({ history }) => {
   const [newMessage, setNewMessage] = useState('');

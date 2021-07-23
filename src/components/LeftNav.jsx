@@ -98,7 +98,7 @@ const LeftNav = ({ profile, chats, friends, history }) => {
     <>
       <div className="profile-part-main">
         <img
-          src="https://www.svgrepo.com/show/170303/avatar.svg"
+          src={profile.avatar}
           alt="avatar"
           className="avatar-img-style"
           onClick={() => toggleProfile()}
@@ -226,7 +226,7 @@ const LeftNav = ({ profile, chats, friends, history }) => {
         ? chats.map((item) => (
             <ChatItem
               key={item._id}
-              owner={profile.lastName}
+              owner={profile.socketId}
               participants={item.chat.participants}
               id={item.chat._id}
               message={item.chat.latestMessage.text}
