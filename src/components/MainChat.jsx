@@ -330,12 +330,14 @@ const MainChat = ({ history }) => {
               style={{ marginTop: '10px' }}
             >
               <span>{chatPartner.name}</span>
-              <span>
+              <span className="under-chat-partner">
                 {isTyping
                   ? '...is typing'
                   : chatPartner.online
                   ? 'online'
-                  : 'last seen ' + dateDiff(chatPartner.lastSeen, Date.now())}
+                  : chatPartner.lastSeen === 'number'
+                  ? 'last seen ' + dateDiff(chatPartner.lastSeen, Date.now())
+                  : 'last seen 01.01.01'}
               </span>
             </div>
           </div>
