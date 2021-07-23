@@ -1,6 +1,7 @@
 .main-chat-view {
   /* height: 87vh; */
   display: flex;
+  flex-wrap: wrap;
 
   flex-direction: column;
   background-image: url(https://theabbie.github.io/blog/assets/official-whatsapp-background-image.jpg);
