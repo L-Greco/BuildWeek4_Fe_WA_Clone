@@ -88,6 +88,15 @@
   margin-left: 40px;
   padding-right: 160px;
   padding-bottom: 10px;
-
-  border-bottom: 1px solid black;
+}
+.add-to-group {
+  font-size: 24px;
+  fill: rgb(21, 44, 9);
+  cursor: pointer;
+}
+.add-icon-wrapper {
+  padding-left: 20px;
+}
+.checkbox-style {
+  float: right;
 }
