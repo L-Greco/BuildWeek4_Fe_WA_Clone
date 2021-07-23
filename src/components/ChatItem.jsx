@@ -49,17 +49,20 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
           });
           setSelectedChat(id);
         }}>
-        <Row>
+        <Row className='chatRow'>
           <Col sm={2}>
             <span>
               <img
-                src={participants[0].profile.avatar}
+                src={
+                  participants.filter((el) => el.profile.socketId !== owner)[0]
+                    .profile.avatar
+                }
                 alt='avatar'
                 className='list-avatar-wrapper'
               />{" "}
             </span>
           </Col>
-          <Col sm={8}>
+          <Col sm={8} s={4}>
             <div className='chat-item-contact'>
               {participants &&
                 participants

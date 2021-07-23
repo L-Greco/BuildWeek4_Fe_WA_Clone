@@ -1,11 +1,11 @@
-import { Col } from "react-bootstrap";
+import { Col, Spinner } from "react-bootstrap";
 import "./styles/MainChat.css";
 import { FormControl } from "react-bootstrap";
 import "react-chat-elements/dist/main.css";
 import { MessageList, MessageBox } from "react-chat-elements";
 import { LoginContext } from "./GlobalState";
 import { useContext, useEffect, useRef } from "react";
-import { getRequest } from "../lib/axios";
+import { getRequest, putRequest } from "../lib/axios";
 import { useState } from "react";
 import parseISO from "date-fns/parseISO";
 import Compress from "react-image-file-resizer";
@@ -14,16 +14,20 @@ import { GrEmoji } from "react-icons/gr";
 import { FiPaperclip } from "react-icons/fi";
 import { BsFillMicFill, BsCheck, BsCheckAll } from "react-icons/bs";
 import Picker from "emoji-picker-react";
+import { withRouter } from "react-router-dom";
 import ChatItem from "./ChatItem";
 import { SocketContext } from "../socket";
 import { useCallback } from "react";
 
-const MainChat = () => {
+const MainChat = ({ history }) => {
   const [newMessage, setNewMessage] = useState("");
   const [chosenEmoji, setChosenEmoji] = useState(null);
   const [emojiClicked, setEmojiClicked] = useState(false);
   const [image, setImage] = useState("");
+  const pickerRef = useRef(null);
+  const grEmoji = useRef(null);
   const [delivered, setDelivered] = useState(true);
+  const [loading, setLoading] = useState(false);
   const {
     selectedChat,
     user,
@@ -40,15 +44,25 @@ const MainChat = () => {
   } = useContext(LoginContext);
   const socket = useContext(SocketContext);
 
+  const toggleFriend = () => {
+    const mainComp = document.getElementById("friend");
+    mainComp.style.width = "33%";
+  };
   const getChatDetails = useCallback(async () => {
     if (selectedChat) {
       try {
+        setLoading(true);
         const res = await getRequest(`chat/${selectedChat}`);
-        if ((res.status = 200)) {
+        if (res.status === 200) {
+          setLoading(false);
           setMessages(res.data.history);
           gotoBottom(".main-chat-view");
         }
       } catch (error) {
+        if (error.response.status === 401) {
+          history.push("/");
+        }
+        setLoading(false);
         console.log(error);
         if (error.response?.status === 401) {
           // socket.emit("offline", user._id);
@@ -82,12 +96,13 @@ const MainChat = () => {
     }
   };
 
-  const messageToSend = {
+  let messageToSend = {
     text: newMessage,
     chatId: selectedChat,
     userId: user._id,
     date: new Date().toISOString(),
     status: "waiting",
+    type: "text",
   };
 
   const handleSubmit = () => {
@@ -218,8 +233,6 @@ const MainChat = () => {
     emojiClicked ? setEmojiClicked(false) : setEmojiClicked(true);
   };
   // pickerRef is the div element that wraps the emoji's box
-  const pickerRef = useRef(null);
-  const grEmoji = useRef(null);
 
   function useOutsideAlerter(ref) {
     useEffect(() => {
@@ -252,18 +265,32 @@ const MainChat = () => {
     let input = document.getElementById("imageInput");
     input.click();
   };
+  const upLoadImage = async () => {
+    setLoading(true);
+    var formdata = new FormData();
+    formdata.append("img", image);
+
+    try {
+      const res = await putRequest("chat/upload", formdata);
+      if (res.status === 200) {
+        setLoading(false);
+        console.log(res);
+      } else {
+        console.log(res);
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      alert(error);
+      console.log(error);
+    }
+  };
   // image to uri
   const imageToUri = async () => {
     let input = document.getElementById("imageInput");
     if (input.files[0]) {
       const file = input.files[0];
       const type = file.type.replace("image/", "");
-      // console.log(type);
-      // let dataUrl = await new Promise((resolve) => {
-      //   let reader = new FileReader();
-      //   reader.onload = () => resolve(reader.result);
-      //   reader.readAsDataURL(file);
-      // });
       Compress.imageFileResizer(
         file, // the file from input
         300, // width
@@ -274,10 +301,15 @@ const MainChat = () => {
         (uri) => {
           setImage(uri);
           // You upload logic goes here
-          console.log(uri);
+          // console.log(uri);
+          upLoadImage();
+          messageToSend = { ...messageToSend, type: "photo", image: uri };
+          setMessages((h) => [...h, messageToSend]);
+          // handleSubmit();
         },
         "base64" // blob or base64 default base64
       );
+
       // setImage(dataUrl);
     }
   };
@@ -307,72 +339,64 @@ const MainChat = () => {
           </div>
         </div>
         <div className='main-chat-view'>
-          {/* workin MessageList */}
-          {/* {messages &&
-              messages
-                .map((message) => {
-                  return {
-                    ...message,
-                    position: user._id === message.userId ? "right" : "left",
-                    date: message.date ? parseISO(message.date) : "nothing",
-                  };
-                })
-                .reverse()} */}
+          {loading && (
+            <Spinner
+              as='span'
+              animation='border'
+              size='lg'
+              role='status'
+              aria-hidden='true'
+              // className="mx-auto"
+              // variant="success"
+              style={{
+                position: "absolute",
+                top: "10%",
+                left: "66%",
+                color: "rgb(30,190,165)",
+              }}
+            />
+          )}
           {messages &&
-            messages.map((message) => {
-              return (
+            messages.map((message) =>
+              message.type === "text" ? (
                 <MessageBox
-                  key={message._id}
-                  id={message._id}
                   position={user._id === message.userId ? "right" : "left"}
-                  type={message.type}
+                  date={message.date ? parseISO(message.date) : "nothing"}
                   text={message.text}
+                  type={message.type}
                   removeButton={true}
                   onRemoveMessageClick={() => {
                     console.log("delete");
                     socket.emit("delete-message", message._id, message.chatId);
                   }}
-                  onContextMenu={() => console.log("context")}
-                  date={message.date ? parseISO(message.date) : "nothing"}
                   status={
                     message.status === "received" ? "received" : "waiting"
                   }
                 />
-              );
-            })}
-          {/* <MessageList
-            className='background-message'
-            id='message-list'
-            lockable={true}
-            dataSource={
-              messages &&
-              messages
-                .map((message) => {
-                  return {
-                    ...message,
-                    position: user._id === message.userId ? "right" : "left",
-                    date: message.date ? parseISO(message.date) : "nothing",
-                  };
-                })
-                .reverse()
-            }
-          /> */}
-          {/* Testing MessageList */}
-          {/* // {image && (
-          //   <MessageBox
-          //     id="message-list"
-          //     position={`left`}
-          //     type={`photo`}
-          //     data={{
-          //       uri: image,
-          //       // uri: "https://cdn.pixabay.com/photo/2015/06/19/23/45/flowers-815412_960_720.jpg",
-          //       status: {
-          //         click: true,
-          //         loading: 1,
-          //       },
-          //     }}
-          //   />
-          // )} */}
+              ) : (
+                <MessageBox
+                  position={user._id === message.userId ? "right" : "left"}
+                  date={message.date ? parseISO(message.date) : "nothing"}
+                  type='photo'
+                  removeButton={true}
+                  onRemoveMessageClick={() => {
+                    console.log("delete");
+                    socket.emit("delete-message", message._id, message.chatId);
+                  }}
+                  data={{
+                    uri: message.image,
+                    status: {
+                      click: true,
+                      loading: 1,
+                    },
+                  }}
+                  text={message.text ? message.text : ""}
+                  status={
+                    message.status === "received" ? "received" : "waiting"
+                  }
+                />
+              )
+            )}
           {emojiClicked && (
             <div ref={pickerRef}>
               <Picker
@@ -426,4 +450,4 @@ const MainChat = () => {
     </>
   );
 };
-export default MainChat;
+export default withRouter(MainChat);

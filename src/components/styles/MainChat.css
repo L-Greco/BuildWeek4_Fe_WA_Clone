@@ -1,9 +1,11 @@
 .main-chat-view {
-  height: 87vh;
+  /* height: 87vh; */
+  display: flex;
+  flex-wrap: wrap;
 
   flex-direction: column;
   background-image: url(https://theabbie.github.io/blog/assets/official-whatsapp-background-image.jpg);
-  overflow-y: scroll;
+  overflow: auto;
 }
 .main-chat-view .rce-mlist {
   display: flex;
@@ -140,4 +142,10 @@
   height: 40px;
   width: 40px;
   border-radius: 30px;
+}
+.under-chat-partner {
+  font-style: italic;
+  font-size: 15px;
+  font-weight: 400;
+  color: rgb(116, 111, 111);
 }

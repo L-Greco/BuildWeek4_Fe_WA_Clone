@@ -7,6 +7,8 @@ import QRCode from "react-qr-code";
 import { useState, useRef, useContext } from "react";
 import { getRequest } from "../lib/axios";
 import { LoginContext } from "./GlobalState";
+import { io } from "socket.io-client";
+import { FcGoogle } from "react-icons/fc";
 
 function LoginPage({ history }) {
   const [signUp, setSignUp] = useState(false);
@@ -192,6 +194,17 @@ function LoginPage({ history }) {
                   />
                 )}
               </button>
+
+              <span className='google-login'>
+                {" "}
+                <a href='https://b4-wa-be.herokuapp.com/users/googlelogin'>
+                  <button className='google-button'>
+                    <FcGoogle className='google-icon' />
+                    Log in with Google
+                  </button>
+                </a>
+              </span>
+
               <div
                 className='GreenLink ml-2 ml-md-0'
                 onClick={() => setSignUp(true)}>
