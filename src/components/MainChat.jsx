@@ -196,7 +196,6 @@ const MainChat = ({ history }) => {
 
   const handleDeleteMessage = useCallback(
     (msgId, chatId) => {
-      console.log("msgId:", msgId);
       if (chatId === selectedChat) {
         setMessages((h) => h.filter((msg) => msg._id !== msgId));
       }
@@ -378,8 +377,19 @@ const MainChat = ({ history }) => {
                   type={message.type}
                   removeButton={true}
                   onRemoveMessageClick={() => {
-                    console.log("delete", message._id);
-                    socket.emit("delete-message", message._id, message.chatId);
+                    if (message._id === undefined) {
+                      if (message.chatId === selectedChat) {
+                        setMessages((h) =>
+                          h.filter((msg) => msg.date !== message.date)
+                        );
+                      }
+                    } else {
+                      socket.emit(
+                        "delete-message",
+                        message._id,
+                        message.chatId
+                      );
+                    }
                   }}
                   status={
                     message.status === "received" ? "received" : "waiting"
@@ -392,8 +402,19 @@ const MainChat = ({ history }) => {
                   type='photo'
                   removeButton={true}
                   onRemoveMessageClick={() => {
-                    console.log(" message._id:", message._id);
-                    socket.emit("delete-message", message._id, message.chatId);
+                    if (message._id === undefined) {
+                      if (message.chatId === selectedChat) {
+                        setMessages((h) =>
+                          h.filter((msg) => msg.date !== message.date)
+                        );
+                      }
+                    } else {
+                      socket.emit(
+                        "delete-message",
+                        message._id,
+                        message.chatId
+                      );
+                    }
                   }}
                   data={{
                     uri: message.image,
