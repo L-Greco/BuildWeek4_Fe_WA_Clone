@@ -31,12 +31,17 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
   return (
     <>
       <div
-        className='chat-list-item'
+        className={`${
+          selectedChat === id ? "chat-list-selected-item" : "chat-list-item"
+        }`}
+        // style={{
+        //   backgroundColor: `${selectedChat === id ? "#EBEBEB" : "#fff"}`,
+        // }}
         onClick={() => {
           setChatPartner({
             name: participants.find((el) => {
               return el.profile.email !== user.profile.email;
-            }).profile.email,
+            }).profile.firstName,
             avatar: participants.find((el) => {
               return el.profile.email !== user.profile.email;
             }).profile.avatar,
@@ -45,41 +50,43 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
             }).profile.online,
           });
           setSelectedChat(id);
-        }}>
-        <Row>
+        }}
+      >
+        <Row className="chatRow">
           <Col sm={2}>
             <span>
               <img
                 src={participants[0].profile.avatar}
-                alt='avatar'
-                className='list-avatar-wrapper'
+                alt="avatar"
+                className="list-avatar-wrapper"
               />{" "}
             </span>
           </Col>
           <Col sm={8}>
-            <div className='chat-item-contact'>
+            <div className="chat-item-contact">
               {participants &&
                 participants
                   .filter((i) => i.profile.email !== user.profile.email)
-                  .map((single) => single.profile.email)}
+                  .map((single) => single.profile.firstName)}
             </div>
-            <div className='chat-item-messaage'>
+            <div className="chat-item-messaage">
               {message ? message : "lack of content"}
             </div>
           </Col>
           <Col sm={2}>
-            <div className='chat-item-time'>
+            <div className="chat-item-time">
               {time ? format(parseISO(time), "hh:mm") : "nothing"}
             </div>
             {newMessage && (
               <div
-                className=' text-white d-flex justify-content-center align-items-center'
+                className=" text-white d-flex justify-content-center align-items-center"
                 style={{
                   width: "15px",
                   height: "16px",
                   borderRadius: "50%",
                   backgroundColor: "#06D755",
-                }}>
+                }}
+              >
                 <span>1</span>
               </div>
             )}

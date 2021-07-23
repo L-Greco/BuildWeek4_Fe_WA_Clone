@@ -10,38 +10,63 @@ import ChatItem from "./ChatItem";
 import Users from "./Users";
 import {socket} from "../App";
 import {getRequest, postRequest} from "../lib/axios";
+import {LoginContext} from "./GlobalState";
+import {withRouter} from "react-router-dom";
 
-const LeftNav = ({profile, chats, friends}) => {
+const LeftNav = ({profile, chats, friends, history}) => {
 	const toggleContacts = () => {
 		const mainComp = document.getElementById("mainComp");
 		mainComp.style.width = "33%";
 	};
-
 	const toggleProfile = () => {
 		const mainComp = document.getElementById("myProfile");
 		mainComp.style.width = "33%";
 	};
-
 	const [query, setQuery] = useState(null);
 	const [users, setUsers] = useState(null);
 	const [check, setCheck] = useState(false);
-	const [chat, setChat] = useState(null);
 	const [group, setGroup] = useState(null);
+	const [chat, setChat] = useState(null);
 	const [visible, setModalVisibility] = useState(false);
+	const {setUser} = useContext(LoginContext);
 
 	const handleSearchInput = (event) => {
 		const query = event.target.value;
 		setQuery(query);
 	};
 
-	const makeQuery = async (event) => {
-		const endPoint = check ? `users/me/friends/` : `users/finduser/`;
+	const getChats = async () => {
+		try {
+			const request = await getRequest("chat/me");
+			if (request.status === 200) {
+				const chats = request.data.map((ch) => {
+					return {hidden: false, chat: ch};
+				});
+				setUser((u) => {
+					return {...u, chats: chats};
+				});
+			}
+			if (request.status === 401) {
+				history.push("/");
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
-		event.preventDefault();
-		if (query && query.length > 1) {
-			const request = await getRequest(endPoint + query);
-			setUsers(request.data);
-			console.log(request);
+	const makeQuery = async (event) => {
+		try {
+			const endPoint = check ? `users/me/friends/` : `users/finduser/`;
+
+			event.preventDefault();
+			if (query && query.length > 1) {
+				const request = await getRequest(endPoint + query);
+				if (request.status === 200) {
+					setUsers(request.data);
+				}
+			}
+		} catch (error) {
+			console.log(error);
 		}
 	};
 
@@ -50,9 +75,16 @@ const LeftNav = ({profile, chats, friends}) => {
 			name: group,
 			participants: [participantId],
 		};
-		const request = await postRequest("chat", chatObject);
-		setChat(request.data);
-		console.log(request.data);
+		try {
+			const request = await postRequest("chat", chatObject);
+			if (request.status === 200) {
+				setChat(request.data);
+				getChats();
+				setUsers(null);
+			}
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const handleCheckBox = (event) => {
@@ -188,19 +220,19 @@ const LeftNav = ({profile, chats, friends}) => {
 							</Modal>
 						</div>
 				  ))
-				: chats &&
-				  chats.length > 0 &&
-				  chats.map((item) => (
+				: chats !== undefined && chats?.length > 0
+				? chats.map((item) => (
 						<ChatItem
 							key={item._id}
 							owner={profile.lastName}
 							participants={item.chat.participants}
 							id={item.chat._id}
 							message={item.chat.latestMessage.text}
-							time={item.chat.latestMessage.updatedAt}
+							time={item.chat.latestMessage.date}
 						/>
-				  ))}
+				  ))
+				: null}
 		</>
 	);
 };
-export default LeftNav;
+export default withRouter(LeftNav);

@@ -1,25 +1,29 @@
-import { Col } from "react-bootstrap";
+import { Col, Spinner } from "react-bootstrap";
 import "./styles/MainChat.css";
-import { AiOutlineSearch } from "react-icons/ai";
-import { BsFillMicFill } from "react-icons/bs";
 import { FormControl } from "react-bootstrap";
 import "react-chat-elements/dist/main.css";
-import { MessageList } from "react-chat-elements";
+import { MessageList, MessageBox } from "react-chat-elements";
 import { LoginContext } from "./GlobalState";
 import { useContext, useEffect, useRef } from "react";
-import { getRequest } from "../lib/axios";
+import { getRequest, putRequest } from "../lib/axios";
 import { useState } from "react";
 import parseISO from "date-fns/parseISO";
+import Compress from "react-image-file-resizer";
 import { socket } from "../App";
 import { dateDiff, gotoBottom, scrollToTop } from "../lib/helper";
 import { GrEmoji } from "react-icons/gr";
+import { FiPaperclip } from "react-icons/fi";
+import { BsFillMicFill } from "react-icons/bs";
 import Picker from "emoji-picker-react";
+import { withRouter } from "react-router-dom";
 import ChatItem from "./ChatItem";
 
-const MainChat = () => {
+const MainChat = ({ history }) => {
   const [newMessage, setNewMessage] = useState("");
   const [chosenEmoji, setChosenEmoji] = useState(null);
   const [emojiClicked, setEmojiClicked] = useState(false);
+  const [image, setImage] = useState("");
+  const [loading, setLoading] = useState(false);
   const {
     selectedChat,
     user,
@@ -30,27 +34,36 @@ const MainChat = () => {
     setIsTyping,
     setChatPartner,
     setNewMessages,
+    loggedIn,
+    setLoggedIn,
   } = useContext(LoginContext);
 
   const getChatDetails = async () => {
     if (selectedChat) {
       try {
+        setLoading(true);
         const res = await getRequest(`chat/${selectedChat}`);
-        if ((res.status = 200)) {
+        if (res.status === 200) {
+          setLoading(false);
           setMessages(res.data.history);
           gotoBottom(".main-chat-view");
         }
+        if (res.status === 401) {
+          history.push("/");
+        }
       } catch (error) {
+        setLoading(false);
         console.log(error);
       }
     }
   };
 
-  const messageToSend = {
+  let messageToSend = {
     text: newMessage,
     chatId: selectedChat,
     userId: user._id,
     date: new Date().toISOString(),
+    type: "text",
   };
 
   const handleSubmit = () => {
@@ -143,19 +156,81 @@ const MainChat = () => {
   }
   useOutsideAlerter(pickerRef);
 
+  // image Input Logic
+
+  const imageInput = () => {
+    let input = document.getElementById("imageInput");
+    input.click();
+  };
+  const upLoadImage = async () => {
+    setLoading(true);
+    var formdata = new FormData();
+    formdata.append("img", image);
+
+    try {
+      const res = await putRequest("chat/upload", formdata);
+      if (res.status === 200) {
+        setLoading(false);
+        console.log(res);
+      } else {
+        console.log(res);
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      alert(error);
+      console.log(error);
+    }
+  };
+  // image to uri
+  const imageToUri = async () => {
+    let input = document.getElementById("imageInput");
+    if (input.files[0]) {
+      const file = input.files[0];
+      const type = file.type.replace("image/", "");
+      // console.log(type);
+      // let dataUrl = await new Promise((resolve) => {
+      //   let reader = new FileReader();
+      //   reader.onload = () => resolve(reader.result);
+      //   reader.readAsDataURL(file);
+      // });
+      Compress.imageFileResizer(
+        file, // the file from input
+        300, // width
+        300, // height
+        type, // compress format WEBP, JPEG, PNG
+        20, // quality
+        0, // rotation
+        (uri) => {
+          setImage(uri);
+          // You upload logic goes here
+          // console.log(uri);
+          upLoadImage();
+          messageToSend = { ...messageToSend, type: "photo", image: uri };
+          setMessages((h) => [...h, messageToSend]);
+          // handleSubmit();
+        },
+        "base64" // blob or base64 default base64
+      );
+
+      // setImage(dataUrl);
+    }
+  };
+
   return (
     <>
       <Col md={12}>
-        <div className='chat-header d-flex flex-row'>
-          <div className='d-flex justify-content-center align-items-center'>
+        <div className="chat-header d-flex flex-row">
+          <div className="d-flex justify-content-center align-items-center">
             <img
               src={chatPartner.avatar}
-              alt='avatar'
-              className='avatar-img-style'
+              alt="avatar"
+              className="avatar-img-style"
             />
             <div
-              className='d-flex flex-column ms-2'
-              style={{ marginTop: "10px" }}>
+              className="d-flex flex-column ms-2"
+              style={{ marginTop: "10px" }}
+            >
               <span>{chatPartner.name}</span>
               <span>
                 {isTyping
@@ -167,10 +242,28 @@ const MainChat = () => {
             </div>
           </div>
         </div>
-        <div className='main-chat-view'>
-          <MessageList
-            className='background-message'
-            id='message-list'
+        <div className="main-chat-view">
+          {loading && (
+            <Spinner
+              as="span"
+              animation="border"
+              size="lg"
+              role="status"
+              aria-hidden="true"
+              // className="mx-auto"
+              // variant="success"
+              style={{
+                position: "absolute",
+                top: "10%",
+                left: "66%",
+                color: "rgb(30,190,165)",
+              }}
+            />
+          )}
+          {/* workin MessageList */}
+          {/* <MessageList
+            className="background-message"
+            id="message-list"
             lockable={true}
             dataSource={
               messages &&
@@ -184,8 +277,47 @@ const MainChat = () => {
                 })
                 .reverse()
             }
-          />
-
+          /> */}
+          {/* Testing MessageList */}
+          {messages &&
+            messages.map((message) =>
+              message.type === "text" ? (
+                <MessageBox
+                  position={user._id === message.userId ? "right" : "left"}
+                  date={message.date ? parseISO(message.date) : "nothing"}
+                  text={message.text}
+                />
+              ) : (
+                <MessageBox
+                  position={user._id === message.userId ? "right" : "left"}
+                  date={message.date ? parseISO(message.date) : "nothing"}
+                  type="photo"
+                  data={{
+                    uri: message.image,
+                    status: {
+                      click: true,
+                      loading: 1,
+                    },
+                  }}
+                  text={message.text ? message.text : ""}
+                />
+              )
+            )}
+          {/* // {image && (
+          //   <MessageBox
+          //     id="message-list"
+          //     position={`left`}
+          //     type={`photo`}
+          //     data={{
+          //       uri: image,
+          //       // uri: "https://cdn.pixabay.com/photo/2015/06/19/23/45/flowers-815412_960_720.jpg",
+          //       status: {
+          //         click: true,
+          //         loading: 1,
+          //       },
+          //     }}
+          //   />
+          // )} */}
           {emojiClicked && (
             <div ref={pickerRef}>
               <Picker
@@ -199,19 +331,21 @@ const MainChat = () => {
               />
             </div>
           )}
-          <div className='searching-div-main-chat'>
+          <div className="searching-div-main-chat">
+            <FiPaperclip
+              onClick={() => imageInput()}
+              className="mx-1 paperClip"
+            />
             <div ref={grEmoji}>
-              <GrEmoji onClick={() => toggleEmoji()} className='emoji' />
+              <GrEmoji onClick={() => toggleEmoji()} className="emoji mx-1" />
             </div>
-            <span>
-              <AiOutlineSearch className='magnify-glass-main-chat' />
-            </span>{" "}
+
             <FormControl
-              type='text'
-              placeholder='Type your message...'
+              type="text"
+              placeholder="Type your message..."
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              className='message-input-main-chat'
+              className="message-input-main-chat"
               onKeyDown={(e) => {
                 socket.emit("im-typing", selectedChat);
                 if (e.key === "Enter") {
@@ -223,12 +357,18 @@ const MainChat = () => {
               }}
             />
             <span>
-              <BsFillMicFill className='voice-message-icon' />
+              <BsFillMicFill className="voice-message-icon" />
             </span>
           </div>
         </div>
       </Col>
+      <input
+        style={{ display: "none" }}
+        id="imageInput"
+        type={"file"}
+        onChange={() => imageToUri()}
+      />
     </>
   );
 };
-export default MainChat;
+export default withRouter(MainChat);

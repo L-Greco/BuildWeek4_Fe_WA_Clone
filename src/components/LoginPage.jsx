@@ -56,21 +56,24 @@ function LoginPage({ history }) {
         if (res.status === 200) {
           setValidation(true);
           setUser(res.data);
-          socket.emit("connect-chats", res.data._id, res.data.chats);
+
           setLoggedIn(true);
           setLoading(false);
-          setSelectedChat(res.data.chats[0].chat._id);
-          setChatPartner({
-            name: res.data.chats[0].chat.participants.find((el) => {
-              return el.profile.email !== res.data.profile.email;
-            }).profile.email,
-            avatar: res.data.chats[0].chat.participants.find((el) => {
-              return el.profile.email !== res.data.profile.email;
-            }).profile.avatar,
-            online: res.data.chats[0].chat.participants.find((el) => {
-              return el.profile.email !== res.data.profile.email;
-            }).profile.online,
-          });
+          if (res.data.chats.length > 0 && res.data.chats !== undefined) {
+            setSelectedChat(res.data.chats[0].chat._id);
+            setChatPartner({
+              name: res.data.chats[0].chat.participants.find((el) => {
+                return el.profile.email !== res.data.profile.email;
+              }).profile.firstName,
+              avatar: res.data.chats[0].chat.participants.find((el) => {
+                return el.profile.email !== res.data.profile.email;
+              }).profile.avatar,
+              online: res.data.chats[0].chat.participants.find((el) => {
+                return el.profile.email !== res.data.profile.email;
+              }).profile.online,
+            });
+            socket.emit("connect-chats", res.data._id, res.data.chats);
+          }
           history.push("/home");
           // saving to gState and redirect to Home and establish connection with socketio
         }

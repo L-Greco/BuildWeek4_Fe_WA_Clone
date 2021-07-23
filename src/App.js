@@ -14,7 +14,13 @@ const ADDRESS = process.env.REACT_APP_BE_URL;
 export const socket = io(ADDRESS, { transports: ['websocket'] });
 
 function App() {
-  const { loggedIn, setLoggedIn, setUser,setSelectedChat, user,setChatPartner } = useContext(LoginContext);
+  const {
+    loggedIn,
+    setLoggedIn,
+    setUser,
+    setSelectedChat,
+    setChatPartner,
+  } = useContext(LoginContext);
 
   const isLogged = async () => {
     try {
@@ -22,19 +28,23 @@ function App() {
       if (data.status === 200) {
         setLoggedIn(true);
         setUser(data.data);
-        setSelectedChat(data.data.chats[0].chat._id)
-        setChatPartner({
-          name: data.data.chats[0].chat.participants.find((el) => {
-            return el.profile.email !== data.data.profile.email;
-          }).profile.email,
-          avatar: data.data.chats[0].chat.participants.find((el) => {
-            return el.profile.email !== data.data.profile.email;
-          }).profile.avatar,
-          online: data.data.chats[0].chat.participants.find((el) => {
-            return el.profile.email !== data.data.profile.email;
-          }).profile.online,
-        });
-        socket.emit('connect-chats', data.data._id, data.data.chats);
+
+        if (data.data.chats.length > 0 && data.data.chats !== undefined) {
+          setSelectedChat(data.data.chats[0].chat._id);
+          setChatPartner({
+            name: data.data.chats[0].chat.participants.find((el) => {
+              return el.profile.email !== data.data.profile.email;
+            }).profile.firstName,
+            avatar: data.data.chats[0].chat.participants.find((el) => {
+              return el.profile.email !== data.data.profile.email;
+            }).profile.avatar,
+            online: data.data.chats[0].chat.participants.find((el) => {
+              return el.profile.email !== data.data.profile.email;
+            }).profile.online,
+          });
+
+          socket.emit('connect-chats', data.data._id, data.data.chats);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -58,8 +68,7 @@ function App() {
       {loggedIn && <Redirect to="/home" />}
       <BackGround />
       <Route component={LoginPage} path="/" exact />
-      {/* Uncomment the line 19 and comment line 20-22 to prevent logged in behaviour */}
-      {/* <Route component={Home} path="/home" exact /> */}
+
       <Route exact path="/home">
         {!loggedIn ? <Redirect to="/" /> : <Home />}
       </Route>
