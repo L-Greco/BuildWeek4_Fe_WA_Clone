@@ -265,7 +265,6 @@ const MainChat = ({ history }) => {
     let input = document.getElementById("imageInput");
     input.click();
   };
-
   // image to uri
   const imageToUri = async () => {
     let input = document.getElementById("imageInput");
@@ -331,17 +330,20 @@ const MainChat = ({ history }) => {
               src={chatPartner.avatar}
               alt='avatar'
               className='avatar-img-style'
+              onClick={() => toggleFriend()}
             />
             <div
               className='d-flex flex-column ms-2'
               style={{ marginTop: "10px" }}>
               <span>{chatPartner.name}</span>
-              <span>
+              <span className='under-chat-partner'>
                 {isTyping
                   ? "...is typing"
                   : chatPartner.online
                   ? "online"
-                  : "last seen " + dateDiff(chatPartner.lastSeen, Date.now())}
+                  : chatPartner.lastSeen === "number"
+                  ? "last seen " + dateDiff(chatPartner.lastSeen, Date.now())
+                  : "last seen 01.01.01"}
               </span>
             </div>
           </div>

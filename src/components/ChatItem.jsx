@@ -1,9 +1,9 @@
-import "./styles/LeftNav.css";
-import { Row, Col } from "react-bootstrap";
-import parseISO from "date-fns/parseISO";
-import { useContext, useEffect, useState } from "react";
-import { LoginContext } from "./GlobalState";
-import { format } from "date-fns";
+import './styles/LeftNav.css';
+import { Row, Col } from 'react-bootstrap';
+import parseISO from 'date-fns/parseISO';
+import { useContext, useEffect, useState } from 'react';
+import { LoginContext } from './GlobalState';
+import { format } from 'date-fns';
 
 const ChatItem = ({ id, participants, message, time, owner }) => {
   const {
@@ -31,9 +31,9 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
   return (
     <>
       <div
-        className='chat-list-item'
+        className="chat-list-item"
         style={{
-          backgroundColor: `${selectedChat === id ? "#EBEBEB" : "#fff"}`,
+          backgroundColor: `${selectedChat === id ? '#EBEBEB' : '#fff'}`,
         }}
         onClick={() => {
           setChatPartner({
@@ -48,8 +48,9 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
             }).profile.online,
           });
           setSelectedChat(id);
-        }}>
-        <Row className='chatRow'>
+        }}
+      >
+        <Row className="chatRow">
           <Col sm={2}>
             <span>
               <img
@@ -57,35 +58,39 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
                   participants.filter((el) => el.profile.socketId !== owner)[0]
                     .profile.avatar
                 }
-                alt='avatar'
-                className='list-avatar-wrapper'
-              />{" "}
+                alt="avatar"
+                className="list-avatar-wrapper"
+              />{' '}
             </span>
           </Col>
           <Col sm={8} s={4}>
-            <div className='chat-item-contact'>
+            <div className="chat-item-contact">
               {participants &&
                 participants
                   .filter((i) => i.profile.email !== user.profile.email)
                   .map((single) => single.profile.firstName)}
             </div>
-            <div className='chat-item-message'>
-              {message ? message : "lack of content"}
+            <div className="chat-item-message">
+              <span className={message ? '' : 'no-message-chat-item'}>
+                {' '}
+                {message ? message : 'no messages'}
+              </span>
             </div>
           </Col>
           <Col sm={2}>
-            <div className='chat-item-time'>
-              {time ? format(parseISO(time), "hh:mm") : "nothing"}
+            <div className="chat-item-time">
+              {time ? format(parseISO(time), 'hh:mm') : 'nothing'}
             </div>
             {newMessage && (
               <div
-                className=' text-white d-flex justify-content-center align-items-center'
+                className=" text-white d-flex justify-content-center align-items-center"
                 style={{
-                  width: "15px",
-                  height: "16px",
-                  borderRadius: "50%",
-                  backgroundColor: "#06D755",
-                }}>
+                  width: '15px',
+                  height: '16px',
+                  borderRadius: '50%',
+                  backgroundColor: '#06D755',
+                }}
+              >
                 <span>1</span>
               </div>
             )}
