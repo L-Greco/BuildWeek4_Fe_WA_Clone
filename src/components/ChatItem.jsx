@@ -50,7 +50,7 @@ const ChatItem = ({ id, participants, message, time, owner }) => {
           setSelectedChat(id);
         }}
       >
-        <Row>
+        <Row className="chatRow">
           <Col sm={2}>
             <span>
               <img

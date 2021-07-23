@@ -7,7 +7,7 @@ axiosClient.defaults.headers = {
   'Content-Type': 'application/json',
   Accept: 'application/json',
 };
-axiosClient.defaults.timeout = 10000;
+axiosClient.defaults.timeout = 5000;
 axiosClient.defaults.withCredentials = true;
 
 export const getRequest = (URL, options = {}) =>
@@ -21,3 +21,5 @@ export const putRequest = (URL, payload) =>
 
 export const deleteRequest = (URL) =>
   axiosClient.delete(`/${URL}`).then((response) => response);
+
+
