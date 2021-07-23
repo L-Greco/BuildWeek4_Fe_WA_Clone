@@ -48,6 +48,7 @@ const MainChat = ({ history }) => {
     const mainComp = document.getElementById("friend");
     mainComp.style.width = "33%";
   };
+
   const getChatDetails = useCallback(async () => {
     if (selectedChat) {
       try {
@@ -323,7 +324,11 @@ const MainChat = ({ history }) => {
         <div className="chat-header d-flex flex-row">
           <div className="d-flex justify-content-center align-items-center">
             <img
-              src={chatPartner.avatar}
+              src={
+                chatPartner && chatPartner.avatar
+                  ? chatPartner.avatar
+                  : "https://image.flaticon.com/icons/png/512/4333/4333609.png"
+              }
               alt="avatar"
               className="avatar-img-style"
               onClick={() => toggleFriend()}
