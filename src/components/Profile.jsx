@@ -12,8 +12,14 @@ const Profile = ({ profile }) => {
     const mainComp = document.getElementById("myProfile");
     mainComp.style.width = "0px";
   };
-
-  const { setLoggedIn, setUser, user } = useContext(LoginContext);
+  const {
+    setLoggedIn,
+    setUser,
+    user,
+    setMessages,
+    setChatPartner,
+    setAllUsers,
+  } = useContext(LoginContext);
   const socket = useContext(SocketContext);
 
   const logout = async () => {
@@ -22,14 +28,19 @@ const Profile = ({ profile }) => {
       if (res.status === 200) {
         socket.emit("offline", user._id);
         setUser({});
+        setMessages([]);
+        setChatPartner({});
+        setAllUsers([]);
         setLoggedIn(false);
       }
     } catch (error) {
       console.log(error);
       if (error.response?.status === 401) {
+        setUser({});
+        setMessages([]);
+        setChatPartner({});
+        setAllUsers([]);
         setLoggedIn(false);
-      } else {
-        setLoggedIn(true);
       }
     }
   };
