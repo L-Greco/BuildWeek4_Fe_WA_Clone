@@ -77,7 +77,6 @@ const MainChatHeader = () => {
         </header>
       );
     } else {
-      console.log("selectedChat.participants:", selectedChat.participants);
       return (
         <header className='chat-header'>
           <div className='d-flex justify-content-center align-items-center'>
