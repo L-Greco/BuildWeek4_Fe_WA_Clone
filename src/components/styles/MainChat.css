@@ -1,41 +1,14 @@
-.main-chat-view {
-  /* height: 87vh; */
-  display: flex;
-  flex-wrap: wrap;
-
-  flex-direction: column;
-  background-image: url(https://theabbie.github.io/blog/assets/official-whatsapp-background-image.jpg);
-  overflow: auto;
-}
-.main-chat-view .rce-mlist {
-  display: flex;
-  flex-direction: column-reverse;
-  justify-content: flex-start;
-}
-
-.main-chat-view .rce-container-mlist {
-  flex-grow: 1;
-}
-
-.background-message .rce-mbox::before {
-  content: "";
-  color: red;
-  background-color: #ffba10;
-  position: absolute;
-  z-index: 1050;
-  left: 0;
-}
 ::-webkit-scrollbar {
   width: 0; /* Remove scrollbar space */
   background: transparent; /* Optional: just make scrollbar invisible */
 }
-.chat-header {
+/* .chat-header {
   background-color: #ededed;
   padding-bottom: 21px;
   position: fixed;
   width: 100%;
   z-index: 1050;
-}
+} */
 .searching-div-main-chat {
   display: flex;
   flex-direction: row;

@@ -17,7 +17,8 @@ function LoginForm({ showModal, hideModal }) {
     email: "",
     password: "",
   });
-  const { setLoggedIn } = useContext(LoginContext);
+  const { setLoggedIn, setMessages, setChatPartner, setAllUsers } =
+    useContext(LoginContext);
 
   const handleChange = (e) => {
     let id = e.target.id;
@@ -61,7 +62,10 @@ function LoginForm({ showModal, hideModal }) {
     } catch (error) {
       console.log(error.message);
       if (error.response?.status === 401) {
-        // socket.emit("offline", user._id);
+        setUser({});
+        setMessages([]);
+        setChatPartner({});
+        setAllUsers([]);
         setLoggedIn(false);
       } else {
         setLoggedIn(true);

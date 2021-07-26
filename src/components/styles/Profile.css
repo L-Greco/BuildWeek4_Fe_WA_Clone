@@ -1,13 +1,12 @@
 .profile-left-nav {
   background-color: #ededed;
-  height: 98vh;
+  height: calc(100vh - 4rem);
   width: 0%;
   position: absolute;
   top: 0px;
-  z-index: 1;
+  z-index: 1050;
   /* bottom: -15px; */
   overflow: hidden;
-
   transition: 0.2s linear;
 }
 .navigation-profile {
