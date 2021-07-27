@@ -41,7 +41,7 @@ const MainChatHeader = () => {
     }
   }, [selectedChatId]);
 
-  if (selectedChat.participants !== undefined) {
+  if (selectedChat && selectedChat.participants !== undefined) {
     if (selectedChat.participants?.length === 2) {
       return (
         <header className='chat-header'>
