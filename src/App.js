@@ -29,7 +29,8 @@ function App() {
       if (data.status === 200) {
         setLoggedIn(true);
         setUser(data.data);
-        if (data.data.chats[0]._id) setSelectedChatId(data.data.chats[0]._id);
+        if (data.data?.chats[0] && data.data.chats[0]._id)
+          setSelectedChatId(data.data.chats[0]._id);
         socket.emit("connect-chats", data.data._id, data.data.chats);
         socket.emit("give-me-my-socket-id", data.data._id);
       }

@@ -169,7 +169,10 @@ const Contacts = ({ friends, history }) => {
         </Row>
         <Row>
           <ListGroup>
-            {allUsers && allUsers.map((item) => <ContactItem item={item} />)}
+            {allUsers &&
+              allUsers.map((item) => (
+                <ContactItem item={item} key={item._id} />
+              ))}
           </ListGroup>
         </Row>
       </div>
