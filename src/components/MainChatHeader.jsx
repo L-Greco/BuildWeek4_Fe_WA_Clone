@@ -26,20 +26,19 @@ const MainChatHeader = () => {
           online: selectedChat.participants.find((el) => {
             return el.profile.email !== user.profile.email;
           }).profile.online,
+          lastSeen: selectedChat.participants.find((el) => {
+            return el.profile.email !== user.profile.email;
+          }).profile.lastSeen,
         });
       }
     }
   }, [user, selectedChatId]);
 
   useEffect(() => {
-    if (firstRun) {
-      setFirstRun(false);
-    } else {
-      if (user) {
-        setSelectedChat(user.chats.find((c) => c._id === selectedChatId));
-      }
+    if (user?.chats) {
+      setSelectedChat(user.chats.find((c) => c._id === selectedChatId));
     }
-  }, [selectedChatId]);
+  }, [user]);
 
   if (selectedChat && selectedChat.participants !== undefined) {
     if (selectedChat.participants?.length === 2) {
@@ -68,7 +67,7 @@ const MainChatHeader = () => {
                   ? "...is typing"
                   : chatPartner.online
                   ? "online"
-                  : chatPartner.lastSeen === "number"
+                  : chatPartner?.lastSeen
                   ? "last seen " + dateDiff(chatPartner.lastSeen, Date.now())
                   : "last seen 01.01.01"}
               </span>
