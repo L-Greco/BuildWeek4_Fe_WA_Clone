@@ -13,6 +13,7 @@ const SocketWrapper = () => {
     newMessages,
     setLoggedIn,
     setUser,
+    user,
   } = useContext(LoginContext);
 
   const socket = useContext(SocketContext);
@@ -24,6 +25,7 @@ const SocketWrapper = () => {
         setUser((u) => {
           return { ...u, chats: request.data };
         });
+        socket.emit("connect-chats", user._id, request.data);
       }
     } catch (error) {
       console.log();
