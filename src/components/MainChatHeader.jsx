@@ -41,7 +41,7 @@ const MainChatHeader = () => {
   }, [user]);
 
   if (selectedChat && selectedChat.participants !== undefined) {
-    if (selectedChat.participants?.length === 2) {
+    if (selectedChat.participants.length === 2) {
       return (
         <header className='chat-header'>
           <div className='d-flex justify-content-center align-items-center'>

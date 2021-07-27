@@ -18,6 +18,7 @@ const Contacts = ({ friends, history }) => {
     setMessages,
     setChatPartner,
     setGroup,
+    user,
   } = useContext(LoginContext);
   const socket = useContext(SocketContext);
   const [setUsers] = useState(null);
@@ -51,6 +52,7 @@ const Contacts = ({ friends, history }) => {
           return { ...u, chats: request.data };
         });
         unToggleContacts();
+        socket.emit("connect-chats", user._id, request.data);
         setGroup([]);
       }
       if (request.status === 401) {
