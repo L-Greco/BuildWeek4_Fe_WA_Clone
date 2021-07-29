@@ -1,59 +1,117 @@
 import "./styles/LeftNav.css";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Button, Dropdown } from "react-bootstrap";
 import parseISO from "date-fns/parseISO";
 import { useContext, useEffect, useState } from "react";
 import { LoginContext } from "./GlobalState";
 import { format } from "date-fns";
+import styled from "styled-components";
+import { FaChevronDown } from "react-icons/fa";
+import { deleteRequest, getRequest } from "../lib/axios";
+import { withRouter } from "react-router-dom";
+import { SocketContext } from "../socket";
+const Styles = styled.div`
+  .menu-button {
+    opacity: 0;
+    transition: opacity 0.1s ease-in-out;
+    border: none;
+    background-color: none;
+    z-index: 1060;
+  }
+  .btn-primary {
+    background-color: transparent;
+  }
+  .dropdown-toggle::after {
+    border: none;
+  }
+  .chat-list-item :hover .menu-button {
+    opacity: 1;
+  }
+`;
 
-const ChatItem = ({ id, participants, message, time, owner, chatName }) => {
+const ChatItem = ({ chat, history }) => {
   const {
-    setSelectedChat,
+    setSelectedChatId,
     setChatPartner,
     user,
     newMessages,
-    selectedChat,
+    selectedChatId,
     setNewMessages,
+    setUser,
+    setMessages,
+    setAllUsers,
+    setLoggedIn,
   } = useContext(LoginContext);
 
-  const [newMessage, setNewMessage] = useState(false);
+  const [showDrop, setShowDrop] = useState(false);
+  const { _id, participants, latestMessage, owner, name } = chat;
+  const socket = useContext(SocketContext);
 
-  useEffect(() => {
-    if (newMessages.includes(id)) {
-      setNewMessages((m) => {
-        return m.filter((chatId) => newMessages.indexOf(chatId) === -1);
-      });
-      setNewMessage(true);
+  const getChats = async () => {
+    try {
+      const request = await getRequest("chat/me");
+      if (request.status === 200) {
+        setUser((u) => {
+          return { ...u, chats: request.data };
+        });
+      }
+      if (request.status === 401) {
+        history.push("/");
+      }
+    } catch (error) {
+      console.log();
+      if (error.response?.status === 401) {
+        setUser({});
+        setMessages([]);
+        setChatPartner({});
+        setAllUsers([]);
+        setLoggedIn(false);
+      } else {
+        setLoggedIn(true);
+      }
     }
-    if (id === selectedChat) {
-      setNewMessage(false);
+  };
+
+  const deleteChat = async () => {
+    try {
+      const res = await deleteRequest("chat/" + _id);
+      if (res.status === 204) {
+        socket.emit("room-deleted", _id);
+        getChats();
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response?.status === 401) {
+        setUser({});
+        setMessages([]);
+        setChatPartner({});
+        setAllUsers([]);
+        setLoggedIn(false);
+      } else {
+        setLoggedIn(true);
+      }
     }
-  }, [newMessages, selectedChat]);
+  };
+
   return (
-    <>
+    <Styles>
       <div
         className='chat-list-item'
         style={{
-          backgroundColor: `${selectedChat === id ? "#EBEBEB" : "#fff"}`,
-        }}
-        onClick={() => {
-          setChatPartner({
-            name: participants.find((el) => {
-              return el.profile.email !== user.profile.email;
-            }).profile.firstName,
-            avatar: participants.find((el) => {
-              return el.profile.email !== user.profile.email;
-            }).profile.avatar,
-            online: participants.find((el) => {
-              return el.profile.email !== user.profile.email;
-            }).profile.online,
-          });
-          setSelectedChat(id);
+          backgroundColor: `${selectedChatId === _id ? "#EBEBEB" : "#fff"}`,
         }}>
         <Row className='chatRow'>
-          <Col sm={2}>
+          <Col
+            sm={2}
+            className=''
+            onClick={() => {
+              setSelectedChatId(_id);
+              newMessages.delete(_id);
+              setNewMessages(new Map(newMessages));
+            }}>
             <span>
               <img
                 src={
+                  participants &&
                   participants.filter((el) => el.profile.socketId !== owner)[0]
                     .profile.avatar
                 }
@@ -62,29 +120,44 @@ const ChatItem = ({ id, participants, message, time, owner, chatName }) => {
               />{" "}
             </span>
           </Col>
-          <Col sm={8} s={4}>
-            {chatName ? (
-              chatName
+          <Col
+            sm={8}
+            onClick={() => {
+              setSelectedChatId(_id);
+              newMessages.delete(_id);
+              setNewMessages(new Map(newMessages));
+            }}>
+            {name ? (
+              <div className='chat-item-contact'>{name}</div>
             ) : (
               <div className='chat-item-contact'>
-                {participants &&
-                  participants
-                    .filter((i) => i.profile.email !== user.profile.email)
-                    .map((single) => single.profile.firstName)}
+                {participants && participants.length > 2
+                  ? participants
+                      .filter((i) => i.profile.email !== user.profile.email)
+                      .map((single) => single.profile.firstName)
+                      .join(", ") + ", you"
+                  : participants
+                      .filter((i) => i.profile.email !== user.profile.email)
+                      .map((single) => single.profile.firstName)}
               </div>
             )}
             <div className='chat-item-message'>
-              <span className={message ? "" : "no-message-chat-item"}>
-                {" "}
-                {message ? message : "no messages"}
+              <span className={latestMessage ? "" : "no-message-chat-item"}>
+                {newMessages.has(_id)
+                  ? newMessages.get(_id).text
+                  : latestMessage?.text
+                  ? latestMessage.text
+                  : "no messages"}
               </span>
             </div>
           </Col>
           <Col sm={2}>
             <div className='chat-item-time'>
-              {time ? format(parseISO(time), "hh:mm") : "nothing"}
+              {latestMessage.date
+                ? format(parseISO(latestMessage.date), "hh:mm")
+                : "nothing"}
             </div>
-            {newMessage && (
+            {newMessages.has(_id) && (
               <div
                 className=' text-white d-flex justify-content-center align-items-center'
                 style={{
@@ -93,14 +166,24 @@ const ChatItem = ({ id, participants, message, time, owner, chatName }) => {
                   borderRadius: "50%",
                   backgroundColor: "#06D755",
                 }}>
-                <span>1</span>
+                <span>{newMessages.get(_id).cnt}</span>
               </div>
             )}
+            <Dropdown>
+              <Dropdown.Toggle className='menu-button btn-link'>
+                <FaChevronDown />
+              </Dropdown.Toggle>
+              <Dropdown.Menu show={showDrop}>
+                <Dropdown.Item as={Button} onClick={() => deleteChat()}>
+                  Delete
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </Col>
         </Row>
       </div>
-    </>
+    </Styles>
   );
 };
 
-export default ChatItem;
+export default withRouter(ChatItem);

@@ -1,26 +1,27 @@
-import './App.css';
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
-import BackGround from './components/BackGround';
-import Home from './components/Home.jsx';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import LoginPage from './components/LoginPage';
-import { LoginContext } from '../src/components/GlobalState';
-import { getRequest } from './lib/axios';
-import { useEffect, useContext, useCallback } from 'react';
-import { SocketContext } from './socket';
-
+import "./App.css";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import BackGround from "./components/BackGround";
+import Home from "./components/Home.jsx";
+import "bootstrap/dist/css/bootstrap.min.css";
+import LoginPage from "./components/LoginPage";
+import { LoginContext } from "../src/components/GlobalState";
+import { getRequest } from "./lib/axios";
+import { useEffect, useContext, useState } from "react";
+import { SocketContext } from "./socket";
 
 function App() {
   const {
     loggedIn,
     setLoggedIn,
     setUser,
-    
-    setSelectedChat,
+    setSelectedChatId,
     setChatPartner,
-    
+    setMessages,
+    setAllUsers,
+    newMessages,
   } = useContext(LoginContext);
   const socket = useContext(SocketContext);
+  const [firstRun, setFirstRun] = useState(true);
 
   const isLogged = async () => {
     try {
@@ -28,48 +29,44 @@ function App() {
       if (data.status === 200) {
         setLoggedIn(true);
         setUser(data.data);
-        socket.emit('connect-chats', data.data._id, data.data.chats);
-        socket.emit("give-me-my-socket-id", data.data._id)
-        if (data.data.chats[0].chat !== null && data.data.chats.length > 0 && data.data.chats !== undefined ) {
-          setSelectedChat(data.data.chats[0].chat._id);
-          setChatPartner({
-            name: data.data.chats[0].chat.participants.find((el) => {
-              return el.profile.email !== data.data.profile.email;
-            }).profile.firstName,
-            avatar: data.data.chats[0].chat.participants.find((el) => {
-              return el.profile.email !== data.data.profile.email;
-            }).profile.avatar,
-            online: data.data.chats[0].chat.participants.find((el) => {
-              return el.profile.email !== data.data.profile.email;
-            }).profile.online,
-          });
-          
-        }
+        if (data.data?.chats[0] && data.data.chats[0]._id)
+          setSelectedChatId(data.data.chats[0]._id);
+        socket.emit("connect-chats", data.data._id, data.data.chats);
+        socket.emit("give-me-my-socket-id", data.data._id);
       }
     } catch (error) {
       console.log(error);
       if (error.response?.status === 401) {
-        // socket.emit("offline", user._id);
+        setUser({});
+        setMessages([]);
+        setChatPartner({});
+        setAllUsers([]);
         setLoggedIn(false);
       } else {
         setLoggedIn(true);
       }
     }
   };
+
   useEffect(() => {
     isLogged();
+
     // return socket.emit('offline', user._id);
   }, [loggedIn]);
 
+  useEffect(() => {
+    if (newMessages.size > 0) document.title = `(${newMessages.size}) WhatsApp`;
+    else document.title = `WhatsApp`;
+  }, [newMessages]);
+
   return (
     <Router>
-      {!loggedIn && <Redirect to="/" />}
-      {loggedIn && <Redirect to="/home" />}
+      {!loggedIn && <Redirect to='/' />}
+      {loggedIn && <Redirect to='/home' />}
       <BackGround />
-      <Route component={LoginPage} path="/" exact />
-
-      <Route exact path="/home">
-        {!loggedIn ? <Redirect to="/" /> : <Home />}
+      <Route component={LoginPage} path='/' exact />
+      <Route exact path='/home'>
+        {!loggedIn ? <Redirect to='/' /> : <Home />}
       </Route>
     </Router>
   );

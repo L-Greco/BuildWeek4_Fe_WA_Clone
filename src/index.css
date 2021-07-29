@@ -1,5 +1,5 @@
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: #e5ddd5;
 }
 .green-part {
@@ -13,11 +13,10 @@ body {
 }
 .main-div-home {
   position: absolute;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  background-color: #f0f0f0;
+  top: 2rem;
+  bottom: 2rem;
+  left: 2rem;
+  right: 2rem;
   --bs-gutter-x: 0 !important;
 }
 
