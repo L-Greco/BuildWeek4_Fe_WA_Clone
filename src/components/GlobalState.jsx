@@ -48,4 +48,18 @@ const GlobalState = ({ children }) => {
     </LoginContext.Provider>
   );
 };
+
+const life ={
+  variety:true,
+  excitement:true,
+  challenging:true
+}
+
+if (life.excitement  === true &&
+    life.variety     === true && 
+    life.challenging === true ) {
+  console.log("Kostas is Happy :D ")
+}
+
+
 export default GlobalState;
